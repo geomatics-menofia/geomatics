@@ -92,7 +92,7 @@ function answer(raw){
 const FALL=()=>`مش متأكد إني فهمت 🤔 جرّب سؤال من دول:<div class="ai-ch">${SUG.map(t=>`<button class="chip" data-q="${E(t)}">${E(t)}</button>`).join('')}</div>`;
 const KB=()=>{const L=['المواد:'];S.forEach(s=>L.push(`- ${s.n} (${s.code}) | ${s.t} نظري${s.p?' + '+s.p+' عملي':''} | ${drs(s)} | ${s.desc}`));L.push('الجدول (الأسبوع الثاني):');SCHED.forEach(x=>{const s=S.find(v=>v.id==x[2]);L.push(`- ${slot(x)} ${s.n}`)});L.push('رئيس القسم: '+SITE.head);L.push('اللائحة: الإجباري 120 ساعة (40 مادة)، الاختياري 8 مواد من 24 + مادتين متطلب كلية من 4، ومادتين متطلب جامعة (قضايا مجتمعية، مدخل إلى الجودة) ولا تحسب في الساعات.');L.push('الجروبات: '+GROUPS.flatMap(g=>g.items).map(i=>i.n).join('، '));L.push('المطوّر: '+SITE.author+' - '+SITE.phone);return L.join('\n').slice(0,7500)};
 const HIST=[]; /* آخر كلام مع الذكاء الاصطناعي عشان يفتكر السياق */
-const askAI=(t,m)=>{const ac=new AbortController(),to=setTimeout(()=>ac.abort(),15000);
+const askAI=(t,m)=>{const ac=new AbortController(),to=setTimeout(()=>ac.abort(),25000);
  fetch(SITE.url+'/functions/v1/ask',{method:'POST',signal:ac.signal,headers:{'Content-Type':'application/json',apikey:SITE.key},body:JSON.stringify({q:t,kb:KB(),h:HIST.slice(-6)})}).then(r=>r.json()).then(d=>{if(d&&d.a){HIST.push({r:'user',t:t},{r:'model',t:d.a})}m.innerHTML=d&&d.a?E(d.a).replace(/\*\*(.+?)\*\*/g,'<b>$1</b>').replace(/\n/g,'<br>')+'<br><small>🤖 رد ذكاء اصطناعي، راجع الإعلانات الرسمية للتأكيد.</small>':FALL()}).catch(()=>{m.innerHTML=FALL()}).finally(()=>clearTimeout(to))};
 
 
