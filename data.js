@@ -1,6 +1,6 @@
 const SITE={
  author:'أحمد',
- ai:true, /* خليها true بعد ما تعمل دالة ask في Supabase */
+ ai:true, /* لازم دالة ask تكون متعملة في Supabase (شوف ask-function.ts) */
  phone:'01094751342',
  head:'أ.د/ موسى فتحي', /* رئيس القسم */
  links:{whatsapp:'https://wa.me/201094751342',telegram:'',linkedin:'',github:'',email:''},

@@ -1,6 +1,7 @@
+@font-face{font-family:AppleEmoji;src:url(fonts/apple-emoji.woff) format("woff");font-display:swap}
 @view-transition{navigation:auto}
 /* ============ الأساس والثيمات ============ */
-:root{--sp:cubic-bezier(.34,1.56,.64,1);--f:'IBM Plex Sans Arabic',Cairo,Tahoma,sans-serif;--fd:'Reem Kufi','IBM Plex Sans Arabic',Cairo,sans-serif;--m:'IBM Plex Mono',ui-monospace,monospace;--r:24px;--r2:18px;--rp:99px;--ba:22%;
+:root{--sp:cubic-bezier(.34,1.56,.64,1);--f:AppleEmoji,'IBM Plex Sans Arabic',Cairo,Tahoma,sans-serif;--fd:AppleEmoji,'Reem Kufi','IBM Plex Sans Arabic',Cairo,sans-serif;--m:AppleEmoji,'IBM Plex Mono',ui-monospace,monospace;--r:24px;--r2:18px;--rp:99px;--ba:22%;
  --ink:#EAF2FF;--mute:#93A4BC;--glass:rgba(255,255,255,.06);--gb:rgba(255,255,255,.13);--hi:rgba(255,255,255,.2);--line:rgba(255,255,255,.12);--on:#07131f;
  --bg:#060D17;--g1:#34D399;--g2:#FDE047;--g3:#FB923C;color-scheme:dark}
 :root[data-t=light]{--ink:#0B1B2E;--mute:#506279;--glass:rgba(255,255,255,.55);--gb:rgba(255,255,255,.85);--hi:rgba(255,255,255,.9);--line:rgba(11,27,46,.12);--on:#fff;--ba:26%;color-scheme:light}
