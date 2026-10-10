@@ -7,6 +7,11 @@ const has=(q,list)=>list.some(w=>rx(w).test(q));
 const E=s=>String(s).replace(/[&<>"']/g,c=>'&#'+c.charCodeAt(0)+';');
 const A=(u,t,same)=>`<a href="${E(u)}"${!same&&(/^https?:/.test(u)||/\.pdf$/.test(u))?' target="_blank" rel="noopener"':''}>${E(t)}</a>`;
 
+/* نيّة "اشرح المحتوى العلمي" - لو موجودة مع اسم مادة، سيب الذكاء الاصطناعي يرد بدل الكارت الجاهز.
+   بنستخدم substring مباشر (مش rx) لأن الأفعال دي بتيجي ملزّقة بضمائر زي "اشرحلي"، "علمني"، "وضحهالي". */
+const EXPLAIN_RE=/اشرح|افهم|فهمني|وضح|علمني|يعلمني|معني|تعريف|عرف لي|عرفني|ايه هي|ايه هو|ما هي|ما هو|بالتفصيل|اشرحلي/;
+const wantsExplain=q=>EXPLAIN_RE.test(q);
+
 /* مرادفات المواد */
 const AL={geo101:['طبيعيه','geo101','عواد'],geo102:['مساحه','خرائط','geo102','ايمان عصام','الامام'],geo103:['نظم','gis','جي اي اس','geo103','عاطف','ارك جيس','arcgis','وجدي'],geo106:['بشريه','geo106','صبحي'],geo119:['اقتصاديه','اقتصاد','geo119','شاويش','يوسف'],geo214:['قضايا','معاصره','geo214'],geo210:['صناعه','geo210'],un400:['جوده','اعتماد','un400','موسي','فتحي']};
 ['geo102','geo210','geo214'].forEach(k=>AL[k].push('اماني'));['geo210','geo214'].forEach(k=>AL[k].push('منشاوي'));
@@ -87,7 +92,13 @@ function answer(raw){
  if(has(q,['ابن الهيثم','بوابه','دفع','رسوم','مصروفات','سداد','منصه التعلم','تعلم الكتروني','فيسبوك','ارشاد','روابط','لينكات']))return H.links(q);
  if(has(q,['اداه','ادوات','حاسبه','احداثيات','مسافه','مساحه الارض','عداد','تحويل']) && !subjectsIn(q).length)return H.tools();
  if(has(q,['لون','ثيم','مظهر','ليلي','نهاري','الوان','بطيء','تقيل','تهنج']))return H.look();
- if(has(q,['المواد','مقررات الفصل','كام ماده','مواد الترم'])||subjectsIn(q).length)return H.subjects(q);
+ if(has(q,['المواد','مقررات الفصل','كام ماده','مواد الترم']))return H.subjects(q);
+ if(subjectsIn(q).length){
+  /* لو الطالب طالب شرح/فهم محتوى المادة (مش بس اسمها) سيب الذكاء الاصطناعي يرد بشرح حقيقي
+     بدل ما نرجّع كارت بيانات الكورس الجاهز */
+  if(wantsExplain(q))return null;
+  return H.subjects(q);
+ }
  return null}
 const FALL=()=>`مش متأكد إني فهمت 🤔 جرّب سؤال من دول:<div class="ai-ch">${SUG.map(t=>`<button class="chip" data-q="${E(t)}">${E(t)}</button>`).join('')}</div>`;
 const KB=()=>{const L=['المواد:'];S.forEach(s=>L.push(`- ${s.n} (${s.code}) | ${s.t} نظري${s.p?' + '+s.p+' عملي':''} | ${drs(s)} | ${s.desc}`));L.push('الجدول (الأسبوع الثاني):');SCHED.forEach(x=>{const s=S.find(v=>v.id==x[2]);L.push(`- ${slot(x)} ${s.n}`)});L.push('رئيس القسم: '+SITE.head);L.push('اللائحة: الإجباري 120 ساعة (40 مادة)، الاختياري 8 مواد من 24 + مادتين متطلب كلية من 4، ومادتين متطلب جامعة (قضايا مجتمعية، مدخل إلى الجودة) ولا تحسب في الساعات.');L.push('الجروبات: '+GROUPS.flatMap(g=>g.items).map(i=>i.n).join('، '));L.push('المطوّر: '+SITE.author+' - '+SITE.phone);return L.join('\n').slice(0,7500)};
@@ -100,7 +111,11 @@ const askAI=(t,m)=>{const ac=new AbortController(),to=setTimeout(()=>ac.abort(),
 const fab=document.createElement('button');fab.id='ai-fab';fab.type='button';fab.setAttribute('aria-label','افتح مساعد جيوماتكس');fab.textContent='🤖';
 let box=null,log=null,inp=null;
 const add=(html,me)=>{const m=document.createElement('div');m.className='ai-m '+(me?'me':'bot');if(me)m.textContent=html;else m.innerHTML=html;log.append(m);log.scrollTop=log.scrollHeight;return m};
-const send=t=>{t=String(t).trim().slice(0,200);if(!t)return;add(t,1);inp.value='';const r=answer(t);if(r!==null){add(r);return}if(!SITE.ai||!SITE.url){add(FALL());return}askAI(t,add('بفكّر… 🤔'))};
+const send=t=>{t=String(t).trim().slice(0,200);if(!t)return;add(t,1);inp.value='';
+ /* الافتراض: كل سؤال يروح للذكاء الاصطناعي على طول زي أي شات بوت عادي، من غير كلمات مفتاحية.
+    المساعد المحلي (الكروت الجاهزة) بيشتغل بس لو مفيش AI متظبط خالص (SITE.ai/SITE.url)، كخط أمان. */
+ if(!SITE.ai||!SITE.url){const r=answer(t);add(r!==null?r:FALL());return}
+ askAI(t,add('بفكّر… 🤔'))};
 function build(){
  box=document.createElement('section');box.id='ai';box.setAttribute('role','dialog');box.setAttribute('aria-label','مساعد جيوماتكس');
  box.innerHTML=`<header><b>🤖 مساعد جيوماتكس</b><button type="button" class="ai-x" aria-label="إغلاق">✕</button></header><div class="ai-log" aria-live="polite"></div><div class="ai-sg">${SUG.map(t=>`<button class="chip" type="button" data-q="${E(t)}">${E(t)}</button>`).join('')}</div><form><input type="text" maxlength="200" placeholder="اسألني: محاضرة المساحة امتى؟" aria-label="اكتب سؤالك" autocomplete="off"><button type="submit" aria-label="إرسال">←</button></form>`;
