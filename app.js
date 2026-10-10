@@ -1,3 +1,4 @@
+if(top!==self){document.documentElement.style.display='none';try{top.location=location.href}catch(e){}}
 const $=(s,r=document)=>r.querySelector(s),$$=(s,r=document)=>[...r.querySelectorAll(s)];
 const esc=s=>String(s).replace(/[&<>"']/g,c=>'&#'+c.charCodeAt(0)+';');
 const P=document.body.dataset.p,sb=SITE.url&&window.supabase?supabase.createClient(SITE.url,SITE.key):null;
@@ -7,7 +8,7 @@ const ppl={};S.forEach(s=>{s.d.forEach(x=>(ppl[x]=ppl[x]||[]).push([s,0]));(s.a|
 const bks=s=>BOOKS[s.id]||[];
 
 /* ===== إعدادات المظهر (الثيمات) ===== */
-const GX_DEF={m:'dark',pal:'emerald',fs:'m',r:'m',bg:'on',an:'on'};
+const GX_DEF={m:'dark',pal:'emerald',fs:'m',r:'m',bg:matchMedia('(pointer:coarse)').matches?'off':'on',an:'on'};
 const gx={...GX_DEF};try{Object.assign(gx,JSON.parse(localStorage.gx||'{}'))}catch(e){}
 const light=matchMedia('(prefers-color-scheme:light)');
 const eff=()=>gx.m=='auto'?(light.matches?'light':'dark'):gx.m;

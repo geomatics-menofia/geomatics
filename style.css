@@ -272,3 +272,17 @@ main{animation:pop2 .6s var(--sp) both}
 @media(prefers-reduced-motion:reduce){*,::before,::after{animation-duration:.01ms!important;animation-delay:0s!important;animation-iteration-count:1!important;transition:none!important}.rv{opacity:1;transform:none}.mq div{animation:none!important}}
 html[data-an=off] *,html[data-an=off] ::before,html[data-an=off] ::after{animation-duration:.01ms!important;animation-delay:0s!important;animation-iteration-count:1!important;transition:none!important}
 html[data-an=off] .rv{opacity:1;transform:none}html[data-an=off] .mq div{animation:none!important}
+
+/* ===== وضع خفيف: بيشتغل لو الأنيميشن مقفول، وتلقائياً على الموبايل ===== */
+html[data-an=off] *,html[data-an=off] ::before,html[data-an=off] ::after{backdrop-filter:none!important;-webkit-backdrop-filter:none!important}
+html[data-an=off] body::after{display:none}
+html[data-an=off] .globe svg{filter:none}
+html[data-an=off] #bg,html[data-an=off] #orb{display:none}
+html[data-an=off]::view-transition-group(*),html[data-an=off]::view-transition-old(*),html[data-an=off]::view-transition-new(*){animation:none!important}
+@media(hover:none) and (pointer:coarse){
+ .card,.panel,.row,.up,details,.row3,footer .w,.sh,.toc,.bcard,.bkb{backdrop-filter:none;-webkit-backdrop-filter:none;background:color-mix(in srgb,var(--bg) 72%,var(--glass))}
+ .mn,.bar::before{backdrop-filter:none;-webkit-backdrop-filter:none;background:color-mix(in srgb,var(--bg) 90%,transparent)}
+ body::after{display:none}
+ .globe svg{filter:none}
+ ::view-transition-group(*),::view-transition-old(*),::view-transition-new(*){animation:none!important}
+}

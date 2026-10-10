@@ -1,12 +1,13 @@
 (()=>{const RT=document.documentElement,dm=matchMedia('(prefers-reduced-motion:reduce)').matches,fine=matchMedia('(pointer:fine)').matches;
 const c=document.createElement('canvas');c.id='bg';document.body.prepend(c);const x=c.getContext('2d');
-let W,H,mx=-999,my=-999,cols=['#34D399','#FDE047','#FB923C'],run=false;const N=innerWidth<700?36:78,pts=[];
+let W,H,mx=-999,my=-999,cols=['#34D399','#FDE047','#FB923C'],run=false;const N=innerWidth<700?24:78,pts=[];
 const R=()=>{W=c.width=innerWidth;H=c.height=innerHeight};R();addEventListener('resize',R);
 for(let i=0;i<N;i++)pts.push({x:Math.random()*innerWidth,y:Math.random()*innerHeight,vx:(Math.random()-.5)*.28,vy:(Math.random()-.5)*.28,k:i%3});
 /* ألوان النقط بتتبع الثيم المختار */
 const rc=()=>{const s=getComputedStyle(RT);cols=['--g1','--g2','--g3'].map((v,i)=>s.getPropertyValue(v).trim()||cols[i])};
-const on=()=>RT.dataset.bg!='off';
-function f(){if(!on()){x.clearRect(0,0,W,H);run=false;return}
+const on=()=>RT.dataset.bg!='off'&&RT.dataset.an!='off',co=matchMedia('(pointer:coarse)').matches;let lt=0;
+function f(t){if(!on()||document.hidden){x.clearRect(0,0,W,H);run=false;return}
+ if(co&&t&&t-lt<33){requestAnimationFrame(f);return}lt=t||0;
  x.clearRect(0,0,W,H);const dk=RT.dataset.t=='dark',lc=dk?'140,200,255':'20,60,110';
  pts.forEach(p=>{p.x+=p.vx;p.y+=p.vy;if(p.x<0||p.x>W)p.vx*=-1;if(p.y<0||p.y>H)p.vy*=-1});
  for(let i=0;i<N;i++){const a=pts[i],cl=cols[a.k];
@@ -18,6 +19,7 @@ function f(){if(!on()){x.clearRect(0,0,W,H);run=false;return}
 const start=()=>{if(run||!on())return;run=true;rc();f()};
 rc();start();
 /* تغيير الإعدادات من صفحة المظهر */
+document.addEventListener('visibilitychange',()=>{if(!document.hidden)start()});
 addEventListener('gx',()=>{rc();if(on()){if(dm)f();else start()}else{x.clearRect(0,0,W,H);run=false}});
 let ox=innerWidth/2,oy=innerHeight/2,tx=ox,ty=oy;
 if(fine&&!dm){const o=document.createElement('div');o.id='orb';document.body.prepend(o);(function L(){ox+=(tx-ox)*.08;oy+=(ty-oy)*.08;if(on())o.style.transform=`translate(${ox-250}px,${oy-250}px)`;requestAnimationFrame(L)})()}
