@@ -40,11 +40,16 @@ function prep(id,ring,simp){const V=[];let last=null;
 function decode(t,name){const tf=t.transform,arcs=t.arcs.map(a=>{let x=0,y=0;return a.map(q=>{x+=q[0];y+=q[1];return tf?[x*tf.scale[0]+tf.translate[0],y*tf.scale[1]+tf.translate[1]]:[x,y]})});
  const ring=r=>{const out=[];r.forEach(i=>{const a=i<0?arcs[~i].slice().reverse():arcs[i];for(let k=out.length?1:0;k<a.length;k++)out.push(a[k])});return out};
  const F=[];(function w(g){if(g.type=='GeometryCollection')g.geometries.forEach(w);else if(g.type=='Polygon')F.push({id:g.id,r:ring(g.arcs[0])});else if(g.type=='MultiPolygon')g.arcs.forEach(pl=>F.push({id:g.id,r:ring(pl[0])}))})(t.objects[name]);return F}
-let DATA=LAND.map(r=>prep('',r,0)).concat([prep('818',EGY,0)]),lvl=0;
+/* ===== وضع العرض: WebGL (سريع وخفيف) أو الرسم القديم بالـ 2D لو الجهاز مش بيدعمه ===== */
+const co=matchMedia('(pointer:coarse)').matches;
+let GLM=null,DATA=[],lvl=0,RINGS=LAND.map(r=>({id:'',r})).concat([{id:'818',r:EGY}]),texDirty=true,texDark=null;
+const prepAll=()=>{DATA=RINGS.map(f=>prep(f.id,f.r,lvl>=2?(co?.01:.0008):0))};
 const BASE='https://cdn.jsdelivr.net/npm/world-atlas@2.0.2/';
 function load(file,simp,L){return fetch(BASE+file).then(r=>{if(!r.ok)throw 0;return r.json()}).then(t=>{const F=decode(t,t.objects.countries?'countries':Object.keys(t.objects)[0]),d=[];
- F.forEach(f=>{if(f.r&&f.r.length>3)d.push(prep(f.id,f.r,simp))});if(d.length&&L>lvl){DATA=d;lvl=L}}).catch(()=>{})}
-load('countries-110m.json',0,1);load('countries-50m.json',.0008,2);
+ F.forEach(f=>{if(f.r&&f.r.length>3)d.push(f)});if(d.length&&L>lvl){RINGS=d;lvl=L;texDirty=true;if(!GLM)prepAll()}}).catch(()=>{})}
+/* الخريطة بتتحمّل بعد ما الصفحة تهدى عشان متعطلش أول ظهور (وعلى الموبايل بنكتفي بالنسخة الأخف في الوضع الاحتياطي) */
+const later=f=>('requestIdleCallback' in window)?requestIdleCallback(f,{timeout:2500}):setTimeout(f,300);
+later(()=>{load('countries-110m.json',0,1).then(()=>later(()=>{if(!co&&!SOFT)load('countries-50m.json',.0008,2)}))});
 let loc={lat:30.55,lon:31.01},src='def';
 try{const s=JSON.parse(localStorage.gxloc||'null');if(s&&isFinite(s.lat)&&isFinite(s.lon)){loc=s;src='gps'}}catch(e){}
 const save=(l,s)=>{loc=l;src=s;try{localStorage.gxloc=JSON.stringify(l)}catch(e){}};
@@ -53,11 +58,11 @@ function ask(){if(!navigator.geolocation){byIP();return}
  navigator.geolocation.getCurrentPosition(p=>save({lat:+p.coords.latitude.toFixed(2),lon:+p.coords.longitude.toFixed(2)},'gps'),()=>byIP(),{timeout:9000,maximumAge:6e5})}
 ask();cv.style.cursor='pointer';cv.addEventListener('click',ask);
 
-let S=0,R=0,dpr=1;
-const fit=()=>{const w=cv.getBoundingClientRect().width||cv.parentNode.clientWidth||300;dpr=Math.min(devicePixelRatio||1,2);S=Math.round(w*dpr);cv.width=cv.height=S;R=S*.39};
-fit();new ResizeObserver(()=>{fit();draw(performance.now())}).observe(cv);
+let S=0,R=0,dpr=1,GLC=null,SOFT=false;
+const fit=()=>{const w=cv.getBoundingClientRect().width||cv.parentNode.clientWidth||300;dpr=Math.min(devicePixelRatio||1,GLM?(co?1.75:2):((co||SOFT)?1:2));S=Math.round(w*dpr);cv.width=cv.height=S;R=S*.39;if(GLC&&GLM&&(GLC.width!=S)){GLC.width=GLC.height=S}if(GLM&&texW()!=GLM.tw)texDirty=true};
+fit();new ResizeObserver(()=>{fit();render(performance.now())}).observe(cv);
 const proj=(lo,la,l0,p0)=>{const a=(lo-l0)*D,f=la*D,f0=p0*D,cf=Math.cos(f);return[cf*Math.sin(a),Math.cos(f0)*Math.sin(f)-Math.sin(f0)*cf*Math.cos(a),Math.sin(f0)*Math.sin(f)+Math.cos(f0)*cf*Math.cos(a)]};
-const css=v=>getComputedStyle(RT).getPropertyValue(v).trim();
+const cssC={};const css=v=>cssC[v]!==undefined?cssC[v]:(cssC[v]=getComputedStyle(RT).getPropertyValue(v).trim());
 function poly(pts,l0,p0,close){const c=S/2;let vis=0;ctx.beginPath();pts.forEach((q,i)=>{let[x,y,z]=proj(q[0],q[1],l0,p0);if(z<0){const h=Math.hypot(x,y)||1;x/=h;y/=h}else vis++;const X=c+R*x,Y=c-R*y;i?ctx.lineTo(X,Y):ctx.moveTo(X,Y)});if(close)ctx.closePath();return vis}
 function line(pts,l0,p0){const c=S/2;ctx.beginPath();let pen=false;pts.forEach(q=>{const[x,y,z]=proj(q[0],q[1],l0,p0);if(z<0){pen=false;return}const X=c+R*x,Y=c-R*y;pen?ctx.lineTo(X,Y):ctx.moveTo(X,Y);pen=true})}
 const fmt=l=>`${Math.abs(l.lat).toFixed(2)}°${l.lat>=0?'N':'S'} ${Math.abs(l.lon).toFixed(2)}°${l.lon>=0?'E':'W'}`;
@@ -114,8 +119,148 @@ function draw(t){if(!S)return;const c=S/2,dk=RT.dataset.t!='light',en=RT.lang=='
   const f1=Math.max(S*.03,11*dpr),f2=Math.max(S*.024,9.5*dpr);ctx.font=`500 ${f1}px "IBM Plex Mono",monospace`;ctx.fillText(fmt(loc),X+ox,Y-S*.012);
   ctx.font=`500 ${f2}px "IBM Plex Sans Arabic",sans-serif`;ctx.globalAlpha=.85;ctx.fillText(cap,X+ox,Y+S*.022);ctx.restore()}
  orbit(false,t)}
-let last=0;const co=matchMedia('(pointer:coarse)').matches;
-function loop(t){requestAnimationFrame(loop);if(document.hidden||RT.dataset.an=='off'||(co&&t-last<33))return;last=t;draw(t)}
-addEventListener('gx',()=>draw(performance.now()));
-requestAnimationFrame(loop);draw(0);
+/* =====================================================================
+   العرض السريع (WebGL): الخريطة بتترسم مرة واحدة على "تكستشر" مسطّح،
+   والكرة نفسها بيحسبها كارت الشاشة في كل فريم (من غير ما المعالج يرسم أي حدود).
+   لو WebGL2 مش متاح بيرجع تلقائياً للرسم القديم فوق.
+   ===================================================================== */
+const VS=`#version 300 es
+void main(){vec2 p=vec2(float((gl_VertexID<<1)&2),float(gl_VertexID&2));gl_Position=vec4(p*2.-1.,0.,1.);}`;
+const FS=`#version 300 es
+precision highp float;
+uniform sampler2D uT;uniform vec2 uC;uniform float uR,uL0,uP0,uSig,uHw;uniform vec3 uO0,uO1,uO2,uRim;
+out vec4 o;const float PI=3.14159265359;
+float grad(vec2 q,vec2 e,float r0,float dr){float A=dot(e,e)-dr*dr,B=-(2.*dot(q,e)+2.*r0*dr),C=dot(q,q)-r0*r0;
+ float d=B*B-4.*A*C;if(d<0.)d=0.;d=sqrt(d);float t1=(-B+d)/(2.*A),t2=(-B-d)/(2.*A);
+ float t=(r0+t1*dr>=0.)?max(t1,t2):t2;if(r0+t1*dr<0.&&r0+t2*dr<0.)t=0.;return clamp(t,0.,1.);}
+void main(){
+ vec2 p=(gl_FragCoord.xy-uC)/uR;float r2=dot(p,p),r=sqrt(r2);
+ float dpx=(r-1.)*uR;
+ /* حافة الغلاف الجوي (خط + توهج) */
+ float line=(1.-smoothstep(uHw-.8,uHw+.8,abs(dpx)))*.75,glow=exp(-dpx*dpx/(2.*uSig*uSig))*.12;
+ float ar=max(line,glow);
+ float a=clamp(-dpx+.5,0.,1.);
+ vec3 col;
+ {
+  float z=sqrt(max(0.,1.-r2)),sp=sin(uP0),cp=cos(uP0);
+  float sph=clamp(p.y*cp+z*sp,-1.,1.);
+  float lon=uL0+atan(p.x,z*cp-p.y*sp);
+  float u=lon/(2.*PI)+.5,v=.5-asin(sph)/PI;
+  vec2 A=vec2(u,v),B=vec2(fract(u+.5)-.5,v);
+  vec2 dx=abs(dFdx(A.x))<abs(dFdx(B.x))?dFdx(A):dFdx(B),dy=abs(dFdy(A.x))<abs(dFdy(B.x))?dFdy(A):dFdy(B);
+  vec4 tx=textureGrad(uT,vec2(fract(u),v),dx,dy);
+  float t=grad(p-vec2(-.35,.4),vec2(.35,-.4),.05,1.0);
+  vec3 oc=t<.55?mix(uO0,uO1,t/.55):mix(uO1,uO2,(t-.55)/.45);
+  col=tx.rgb+oc*(1.-tx.a);
+  /* ظل وإضاءة */
+  float s=grad(p-vec2(-.4,.45),vec2(.4,-.45),.3,.72);
+  float wa=s<.6?.10*(1.-s/.6):0.;
+  float da=s>.6?.55*(s-.6)/.4:0.;
+  col=col*(1.-wa)+vec3(wa);
+  col=col*(1.-da)+vec3(0.,10.,30.)/255.*da;
+ }
+ /* premultiplied */
+ vec3 pc=col*a;float al=a;
+ pc=pc*(1.-ar)+uRim*ar;al=al*(1.-ar)+ar;
+ o=vec4(pc,al);
+}`;
+const hex=h=>{h=h.replace('#','');return[parseInt(h.slice(0,2),16)/255,parseInt(h.slice(2,4),16)/255,parseInt(h.slice(4,6),16)/255]};
+const OCN={d:['#2b86c4','#12498a','#071a33'].map(hex),l:['#8fd0f5','#3f95d6','#1f62a6'].map(hex)};
+function glSetup(){try{
+ const c=document.createElement('canvas'),gl=c.getContext('webgl2',{alpha:true,premultipliedAlpha:true,antialias:false,depth:false,stencil:false,powerPreference:'low-power'});
+ if(!gl)return null;
+ /* لو الجهاز مفيش عنده كارت شاشة شغال (WebGL بالبرنامج) الرسم القديم المخفّف أسرع */
+ const dbg=gl.getExtension('WEBGL_debug_renderer_info'),rn=dbg?String(gl.getParameter(dbg.UNMASKED_RENDERER_WEBGL)):'';
+ if(/swiftshader|llvmpipe|software|basic render/i.test(rn)&&!window.__GX_FORCE_GL){SOFT=true;return null}
+ const sh=(t,src)=>{const x=gl.createShader(t);gl.shaderSource(x,src);gl.compileShader(x);if(!gl.getShaderParameter(x,gl.COMPILE_STATUS))throw new Error(gl.getShaderInfoLog(x));return x};
+ const pr=gl.createProgram();gl.attachShader(pr,sh(gl.VERTEX_SHADER,VS));gl.attachShader(pr,sh(gl.FRAGMENT_SHADER,FS));gl.linkProgram(pr);
+ if(!gl.getProgramParameter(pr,gl.LINK_STATUS))throw new Error(gl.getProgramInfoLog(pr));
+ gl.useProgram(pr);gl.disable(gl.BLEND);
+ const U={};['uT','uC','uR','uL0','uP0','uSig','uHw','uO0','uO1','uO2','uRim'].forEach(n=>U[n]=gl.getUniformLocation(pr,n));
+ const tex=gl.createTexture();gl.activeTexture(gl.TEXTURE0);gl.bindTexture(gl.TEXTURE_2D,tex);gl.uniform1i(U.uT,0);
+ gl.texImage2D(gl.TEXTURE_2D,0,gl.RGBA,1,1,0,gl.RGBA,gl.UNSIGNED_BYTE,new Uint8Array(4));
+ c.addEventListener('webglcontextlost',e=>{e.preventDefault();GLM=null;if(!DATA.length)prepAll();fit()});
+ c.addEventListener('webglcontextrestored',()=>{GLM=glSetup();if(GLM){texDirty=true;fit()}});
+ GLC=c;return{gl,U,tex,tw:0,mx:gl.getParameter(gl.MAX_TEXTURE_SIZE),an:gl.getExtension('EXT_texture_filter_anisotropic')}
+}catch(e){console.warn('globe: WebGL غير متاح، هيتم استخدام الرسم الاحتياطي —',e&&e.message);GLC=null;return null}}
+/* مقاس التكستشر على حسب حجم الكرة على الشاشة (من غير ما يزيد عن اللازم) */
+function texW(){let w=1024;while(w<Math.min(4096,R*6.3)&&w<4096)w*=2;return Math.min(w,GLM?GLM.mx:4096)}
+/* ===== رسم الخريطة المسطّحة (بتتنفذ مرة واحدة، ومرة تانية لو الثيم أو البيانات اتغيرت) ===== */
+const TC=document.createElement('canvas');
+function buildTex(dk){
+ const W=texW(),H=W/2,t=TC.getContext('2d');TC.width=W;TC.height=H;t.clearRect(0,0,W,H);
+ const lw=Math.max(1,W/2048*1.1),X=lo=>(lo+180)/360*W,Y=la=>(90-la)/180*H;
+ /* حلقة → مسار (بيتعامل مع خط التاريخ ±180 والقطبين) */
+ const path=(ring,k)=>{const n=ring.length;if(n<3)return;const xs=new Float32Array(n);xs[0]=ring[0][0];let mn=xs[0],mx=xs[0],la=0;
+  for(let i=1;i<n;i++){let x=ring[i][0];while(x-xs[i-1]>180)x-=360;while(x-xs[i-1]<-180)x+=360;xs[i]=x;if(x<mn)mn=x;if(x>mx)mx=x}
+  for(let i=0;i<n;i++)la+=ring[i][1];
+  const polar=Math.abs(xs[n-1]-xs[0])>300,pole=la/n<0?-90:90,offs=[0];if(mn<-180)offs.push(1);if(mx>180)offs.push(-1);
+  offs.forEach(o=>{if(k!==undefined&&o!==k)return;const dx=o*W;t.moveTo(X(xs[0])+dx,Y(ring[0][1]));for(let i=1;i<n;i++)t.lineTo(X(xs[i])+dx,Y(ring[i][1]));
+   if(polar){t.lineTo(X(xs[n-1])+dx,Y(pole));t.lineTo(X(xs[0])+dx,Y(pole))}t.closePath()})};
+ const land=dk?'#2f7a5c':'#5fae7a',edge=dk?'rgba(190,255,225,.4)':'rgba(255,255,255,.65)';
+ t.lineJoin='round';t.lineWidth=lw;t.fillStyle=land;t.strokeStyle=edge;
+ const eg=[];t.beginPath();RINGS.forEach(f=>{if(String(f.id)=='818')eg.push(f);else path(f.r)});t.fill();t.stroke();
+ if(lvl==0){t.globalCompositeOperation='destination-out';LAKES.forEach(p=>{t.beginPath();path(p);t.fill()});t.globalCompositeOperation='source-over'}
+ /* مصر */
+ if(eg.length){const ep=()=>{t.beginPath();eg.forEach(f=>path(f.r))};
+  ep();t.fillStyle=dk?'#c9a35e':'#d9b873';t.strokeStyle='rgba(255,236,170,.95)';t.lineWidth=lw*2;t.fill();t.stroke();
+  ep();t.save();t.clip();
+  t.fillStyle='#34b36b';t.beginPath();path(DELTA);t.fill();
+  const ln=(pts,w,c)=>{t.beginPath();pts.forEach((q,i)=>i?t.lineTo(X(q[0]),Y(q[1])):t.moveTo(X(q[0]),Y(q[1])));t.strokeStyle=c;t.lineWidth=w;t.stroke()};
+  t.lineCap='round';ln(SUEZ,lw*1.83,'#4aa8e8');ln(LAKEN,lw*4.8,'#4aa8e8');NILE.forEach(n=>ln(n,lw*2.83,'#38d67f'));t.restore()}
+ /* شبكة الإحداثيات */
+ t.strokeStyle=dk?'rgba(190,225,255,.22)':'rgba(255,255,255,.4)';t.lineWidth=lw;t.beginPath();
+ for(let la=-60;la<=60;la+=30){t.moveTo(0,Y(la));t.lineTo(W,Y(la))}
+ for(let lo=-180;lo<=180;lo+=30){t.moveTo(X(lo),0);t.lineTo(X(lo),H)}
+ t.stroke();
+ const{gl,tex}=GLM;gl.bindTexture(gl.TEXTURE_2D,tex);gl.pixelStorei(gl.UNPACK_PREMULTIPLY_ALPHA_WEBGL,true);
+ gl.texImage2D(gl.TEXTURE_2D,0,gl.RGBA,gl.RGBA,gl.UNSIGNED_BYTE,TC);gl.generateMipmap(gl.TEXTURE_2D);
+ gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_MIN_FILTER,gl.LINEAR_MIPMAP_LINEAR);gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_MAG_FILTER,gl.LINEAR);
+ gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_WRAP_S,gl.REPEAT);gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_WRAP_T,gl.CLAMP_TO_EDGE);
+ if(GLM.an)gl.texParameterf(gl.TEXTURE_2D,GLM.an.TEXTURE_MAX_ANISOTROPY_EXT,Math.min(4,gl.getParameter(GLM.an.MAX_TEXTURE_MAX_ANISOTROPY_EXT)));
+ GLM.tw=W;texDirty=false;texDark=dk}
+/* ===== لافتات (اسم مصر + إحداثيات الموقع): بتتجهز مرة وبتتنسخ كل فريم ===== */
+const SPR={};
+function sprite(key,w,h,fn){let o=SPR[key.k];if(o&&o.s==key.s)return o;const c=document.createElement('canvas');c.width=Math.ceil(w);c.height=Math.ceil(h);fn(c.getContext('2d'));return SPR[key.k]={s:key.s,c}}
+const PXC=document.createElement('canvas');PXC.width=PXC.height=1;const PXX=PXC.getContext('2d',{willReadFrequently:true});
+function rgbOf(v,fb){const k='rgb:'+v;if(cssC[k])return cssC[k];PXX.clearRect(0,0,1,1);PXX.fillStyle=fb;PXX.fillStyle=css(v)||fb;PXX.fillRect(0,0,1,1);const d=PXX.getImageData(0,0,1,1).data;return cssC[k]=[d[0]/255,d[1]/255,d[2]/255]}
+const mono=px=>`500 ${px}px "IBM Plex Mono",monospace`,sans=(px,w)=>`${w||500} ${px}px "IBM Plex Sans Arabic",sans-serif`;
+document.fonts&&document.fonts.addEventListener&&document.fonts.addEventListener('loadingdone',()=>{for(const k in SPR)delete SPR[k]});
+/* ===== فريم WebGL ===== */
+function drawGL(t){
+ if(!S)return;const c=S/2,dk=RT.dataset.t!='light',en=RT.lang=='en';
+ if(texDirty||texDark!==dk)buildTex(dk);
+ const l0=loc.lon-9+14*Math.sin(t*.00028),p0=loc.lat-7+3*Math.sin(t*.00021);
+ const{gl,U}=GLM,oc=dk?OCN.d:OCN.l,rim=rgbOf('--g1','#34D399');
+ gl.viewport(0,0,S,S);
+ gl.uniform2f(U.uC,c,c);gl.uniform1f(U.uR,R);gl.uniform1f(U.uL0,l0*D);gl.uniform1f(U.uP0,p0*D);gl.uniform1f(U.uSig,S*.015);gl.uniform1f(U.uHw,S*.002);
+ gl.uniform3fv(U.uO0,oc[0]);gl.uniform3fv(U.uO1,oc[1]);gl.uniform3fv(U.uO2,oc[2]);gl.uniform3fv(U.uRim,rim);
+ gl.drawArrays(gl.TRIANGLES,0,3);
+ ctx.clearRect(0,0,S,S);orbit(true,t);ctx.drawImage(GLC,0,0);
+ /* اسم مصر */
+ const[ex,ey,ez]=proj(29.6,26.6,l0,p0),nearU=Math.hypot(loc.lon-29.6,loc.lat-26.6)<7;
+ if(ez>.25&&!nearU){const fs=S*.026,b=S*.008,sp=sprite({k:'eg',s:[en,S].join()},fs*3+b*4,fs*1.8+b*4,g=>{g.font=sans(fs,700);g.textAlign='center';g.fillStyle='#fff7d6';g.shadowColor='#000';g.shadowBlur=b;g.fillText(en?'EGYPT':'مصر',g.canvas.width/2,g.canvas.height/2+fs*.35)});
+  ctx.drawImage(sp.c,c+R*ex-sp.c.width/2,c-R*ey-sp.c.height/2-fs*.35)}
+ /* مكان الجهاز */
+ const[x,y,z]=proj(loc.lon,loc.lat,l0,p0);
+ if(z>.05){const X=c+R*x,Y=c-R*y,k=(t%2000)/2000;
+  ctx.strokeStyle=css('--g3')||'#FB923C';ctx.globalAlpha=.8*(1-k);ctx.lineWidth=S*.004;ctx.beginPath();ctx.arc(X,Y,S*.01+S*.045*k,0,6.3);ctx.stroke();ctx.globalAlpha=1;
+  ctx.fillStyle=ctx.strokeStyle;ctx.beginPath();ctx.arc(X,Y,S*.011,0,6.3);ctx.fill();ctx.strokeStyle='#fff';ctx.lineWidth=S*.003;ctx.stroke();
+  const right=X<c+R*.45,cap=src=='gps'?(en?'You are here':'موقعك'):src=='ip'?(en?'Approx. location':'موقعك التقريبي'):(en?'Menoufia':'المنوفية');
+  const f1=Math.max(S*.03,11*dpr),f2=Math.max(S*.024,9.5*dpr),pad=S*.03,wd=Math.max(f1*9,f2*10)+pad*2,ox=(right?1:-1)*S*.025;
+  const sp=sprite({k:'pin'+(right?'R':'L'),s:[en,S,loc.lat,loc.lon,src,right].join()},wd,f1*2.4+pad*2,g=>{const ax=right?pad:wd-pad,ay=f1*1.2+pad;g.textAlign=right?'left':'right';g.shadowColor='rgba(0,0,0,.7)';g.shadowBlur=S*.01;g.fillStyle='#fff';
+   g.font=mono(f1);g.fillText(fmt(loc),ax,ay-S*.012);g.font=sans(f2);g.globalAlpha=.85;g.fillText(cap,ax,ay+S*.022)});
+  ctx.drawImage(sp.c,X+ox-(right?pad:sp.c.width-pad),Y-(f1*1.2+pad))}
+ orbit(false,t)}
+GLM=glSetup();if(!GLM)prepAll();fit();
+/* ===== نظام العرض: فريم واحد بس بيتحسب لما الكرة ظاهرة، وبيقف لما تختفي ===== */
+function render(t){GLM?drawGL(t):draw(t)}
+let last=0,vis=true,going=false;
+function loop(t){going=false;if(!vis||document.hidden)return;go();
+ if(RT.dataset.an=='off'||((co||SOFT)&&t-last<33))return;last=t;render(t)}
+function go(){if(!going){going=true;requestAnimationFrame(loop)}}
+if('IntersectionObserver' in window)new IntersectionObserver(es=>{vis=es[es.length-1].isIntersecting;if(vis)go()},{threshold:0}).observe(cv);
+document.addEventListener('visibilitychange',()=>{if(!document.hidden)go()});
+addEventListener('gx',()=>{for(const k in cssC)delete cssC[k];render(performance.now())});
+go();render(0);
 })();

@@ -10,11 +10,15 @@ function f(t){if(!on()||document.hidden){x.clearRect(0,0,W,H);run=false;return}
  if(co&&t&&t-lt<33){requestAnimationFrame(f);return}lt=t||0;
  x.clearRect(0,0,W,H);const dk=RT.dataset.t=='dark',lc=dk?'140,200,255':'20,60,110';
  pts.forEach(p=>{p.x+=p.vx;p.y+=p.vy;if(p.x<0||p.x>W)p.vx*=-1;if(p.y<0||p.y>H)p.vy*=-1});
- for(let i=0;i<N;i++){const a=pts[i],cl=cols[a.k];
-  for(let j=i+1;j<N;j++){const b=pts[j],d=Math.hypot(a.x-b.x,a.y-b.y);if(d<150){x.strokeStyle=`rgba(${lc},${(1-d/150)*.18})`;x.beginPath();x.moveTo(a.x,a.y);x.lineTo(b.x,b.y);x.stroke()}}
-  const q=Math.hypot(a.x-mx,a.y-my);
-  if(q<190){x.strokeStyle=cl;x.globalAlpha=(1-q/190)*.75;x.beginPath();x.moveTo(a.x,a.y);x.lineTo(mx,my);x.stroke()}
-  x.fillStyle=cl;x.globalAlpha=.85;x.beginPath();x.arc(a.x,a.y,q<190?2.7:1.6,0,6.3);x.fill();x.globalAlpha=1}
+ /* نفس الشكل بالظبط، بس الخطوط والنقط بتترسم على دفعات (٤ مستويات شفافية + لون لكل مجموعة) بدل مئات الأوامر في كل فريم */
+ const LV=4,bk=[[],[],[],[]],mx2=190*190;x.lineWidth=1;
+ for(let i=0;i<N;i++){const a=pts[i];
+  for(let j=i+1;j<N;j++){const b=pts[j],dx=a.x-b.x,dy=a.y-b.y,d2=dx*dx+dy*dy;if(d2<22500){const k=Math.min(LV-1,((1-Math.sqrt(d2)/150)*LV)|0);bk[k].push(a,b)}}}
+ for(let k=0;k<LV;k++){const L=bk[k];if(!L.length)continue;x.strokeStyle=`rgba(${lc},${((k+.5)/LV)*.18})`;x.beginPath();for(let n=0;n<L.length;n+=2){x.moveTo(L[n].x,L[n].y);x.lineTo(L[n+1].x,L[n+1].y)}x.stroke()}
+ for(let i=0;i<N;i++){const a=pts[i],dx=a.x-mx,dy=a.y-my;if(dx*dx+dy*dy<mx2){const q=Math.sqrt(dx*dx+dy*dy);x.strokeStyle=cols[a.k];x.globalAlpha=(1-q/190)*.75;x.beginPath();x.moveTo(a.x,a.y);x.lineTo(mx,my);x.stroke()}}
+ x.globalAlpha=.85;
+ for(let c=0;c<3;c++){x.fillStyle=cols[c];x.beginPath();for(let i=0;i<N;i++){const a=pts[i];if(a.k!==c)continue;const dx=a.x-mx,dy=a.y-my,r=dx*dx+dy*dy<mx2?2.7:1.6;x.moveTo(a.x+r,a.y);x.arc(a.x,a.y,r,0,6.3)}x.fill()}
+ x.globalAlpha=1;
  if(dm){run=false;return}requestAnimationFrame(f)}
 const start=()=>{if(run||!on())return;run=true;rc();f()};
 rc();start();
@@ -22,7 +26,7 @@ rc();start();
 document.addEventListener('visibilitychange',()=>{if(!document.hidden)start()});
 addEventListener('gx',()=>{rc();if(on()){if(dm)f();else start()}else{x.clearRect(0,0,W,H);run=false}});
 let ox=innerWidth/2,oy=innerHeight/2,tx=ox,ty=oy;
-if(fine&&!dm){const o=document.createElement('div');o.id='orb';document.body.prepend(o);(function L(){ox+=(tx-ox)*.08;oy+=(ty-oy)*.08;if(on())o.style.transform=`translate(${ox-250}px,${oy-250}px)`;requestAnimationFrame(L)})()}
+if(fine&&!dm){const o=document.createElement('div');o.id='orb';document.body.prepend(o);let wx=NaN,wy=NaN;(function L(){ox+=(tx-ox)*.08;oy+=(ty-oy)*.08;if(on()&&(!(Math.abs(ox-wx)<.05)||!(Math.abs(oy-wy)<.05))){wx=ox;wy=oy;o.style.transform=`translate(${ox-250}px,${oy-250}px)`}requestAnimationFrame(L)})()}
 addEventListener('pointermove',e=>{mx=e.clientX;my=e.clientY;tx=mx;ty=my;
  const g=e.target.closest&&e.target.closest('.card,.row3,.ti,.bcard,.pal');
  if(g){const b=g.getBoundingClientRect(),px=e.clientX-b.left,py=e.clientY-b.top;g.style.setProperty('--mx',px+'px');g.style.setProperty('--my',py+'px');

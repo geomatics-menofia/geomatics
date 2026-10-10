@@ -328,7 +328,10 @@ html{touch-action:pan-x pan-y} /* منع التكبير بالإصبعين (iOS 
 .orgh img{width:30px;height:30px;border-radius:50%;background:#fff;padding:1px;box-shadow:0 0 0 2px var(--gb);flex:none}
 .orgh span{display:grid}.orgh b{font:600 .72rem/1.35 var(--f);color:var(--mute);white-space:nowrap}
 #lg{font:700 .78rem var(--f);transition:transform .3s var(--sp)}#lg:hover{transform:scale(1.1)}
-.globe canvas{display:block;width:100%;aspect-ratio:1;animation:fl 7s ease-in-out infinite;filter:drop-shadow(0 34px 50px color-mix(in srgb,var(--g1) 28%,transparent))}
+/* الظل المتوهج: كان فلتر drop-shadow بيتعاد حسابه كل فريم على الكانفاس المتحرك (ده كان أكبر سبب في التقل)، اتبدل بطبقة ثابتة بنفس الشكل */
+.globe{position:relative;isolation:isolate}
+.globe::before{content:"";position:absolute;left:6%;right:6%;top:11%;bottom:1%;border-radius:50%;z-index:-1;pointer-events:none;background:radial-gradient(closest-side,color-mix(in srgb,var(--g1) 30%,transparent) 55%,transparent);animation:fl 7s ease-in-out infinite;will-change:transform}
+.globe canvas{display:block;width:100%;aspect-ratio:1;animation:fl 7s ease-in-out infinite}
 html[data-an=off] .globe canvas,.globe canvas{will-change:transform}
 html[lang=en] .bt small{display:none}
 html[lang=en] body{letter-spacing:0}
