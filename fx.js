@@ -1,4 +1,4 @@
-(()=>{const RT=document.documentElement,dm=matchMedia('(prefers-reduced-motion:reduce)').matches,fine=matchMedia('(pointer:fine)').matches;
+(()=>{const RT=document.documentElement,dm=false,fine=matchMedia('(pointer:fine)').matches;
 const c=document.createElement('canvas');c.id='bg';document.body.prepend(c);const x=c.getContext('2d');
 let W,H,mx=-999,my=-999,cols=['#34D399','#FDE047','#FB923C'],run=false;const N=innerWidth<700?24:78,pts=[];
 let lw=innerWidth;const R=()=>{W=c.width=innerWidth;H=c.height=innerHeight};R();addEventListener('resize',()=>{if(innerWidth!=lw){lw=innerWidth;R()}});

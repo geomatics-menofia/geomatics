@@ -112,7 +112,7 @@ const G=[['A',4],['A-',3.7],['B+',3.3],['B',3],['B-',2.7],['C+',2.3],['C',2],['C
 /* بكرة لانهائية: بتلف في دايرة ومالهاش أول ولا آخر. سحب، أسهم، كيبورد، عجلة الماوس */
 function makeReel(root,n,start,onPick){
  const items=$$('.ri',root);let pos=start,tgt=start,W=150,SP=130,raf=0,drag=null,wt=0;
- const mod=i=>((i%n)+n)%n,calm=()=>matchMedia('(prefers-reduced-motion:reduce)').matches||document.documentElement.dataset.an=='off';
+ const mod=i=>((i%n)+n)%n,calm=()=>document.documentElement.dataset.an=='off';
  const draw=()=>items.forEach((el,i)=>{let d=i-pos;d=((d+n/2)%n+n)%n-n/2;const a=Math.abs(d);
   el.style.transform=`translateX(${(-d*SP).toFixed(1)}px) translateZ(${(-a*40).toFixed(0)}px) rotateY(${(-d*20).toFixed(1)}deg) scale(${(1-Math.min(a,3)*.07).toFixed(3)})`;
   el.style.opacity=Math.max(0,1-a*.24).toFixed(2);el.style.zIndex=String(60-Math.round(a*10));el.style.pointerEvents=a>2.7?'none':''});
