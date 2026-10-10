@@ -1,5 +1,6 @@
 const SITE={
  author:'أحمد',
+ ai:true, /* خليها true بعد ما تعمل دالة ask في Supabase */
  phone:'01094751342',
  head:'أ.د/ موسى فتحي', /* رئيس القسم */
  links:{whatsapp:'https://wa.me/201094751342',telegram:'',linkedin:'',github:'',email:''},

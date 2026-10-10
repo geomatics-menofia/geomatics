@@ -1,7 +1,7 @@
 (()=>{const RT=document.documentElement,dm=matchMedia('(prefers-reduced-motion:reduce)').matches,fine=matchMedia('(pointer:fine)').matches;
 const c=document.createElement('canvas');c.id='bg';document.body.prepend(c);const x=c.getContext('2d');
 let W,H,mx=-999,my=-999,cols=['#34D399','#FDE047','#FB923C'],run=false;const N=innerWidth<700?24:78,pts=[];
-const R=()=>{W=c.width=innerWidth;H=c.height=innerHeight};R();addEventListener('resize',R);
+let lw=innerWidth;const R=()=>{W=c.width=innerWidth;H=c.height=innerHeight};R();addEventListener('resize',()=>{if(innerWidth!=lw){lw=innerWidth;R()}});
 for(let i=0;i<N;i++)pts.push({x:Math.random()*innerWidth,y:Math.random()*innerHeight,vx:(Math.random()-.5)*.28,vy:(Math.random()-.5)*.28,k:i%3});
 /* ألوان النقط بتتبع الثيم المختار */
 const rc=()=>{const s=getComputedStyle(RT);cols=['--g1','--g2','--g3'].map((v,i)=>s.getPropertyValue(v).trim()||cols[i])};
