@@ -189,7 +189,7 @@ function lookPage(){
 
 /* ===== الجروبات والروابط ===== */
 function groupsPage(){
- M.innerHTML=`<div class="w sec">${GROUPS.map((g,k)=>`<h2 data-n="${String(k+1).padStart(2,'0')}" style="margin-top:${k?44:0}px">${g.t}</h2><p class="mute">${g.s}</p><div class="grid">${g.items.map(x=>`<a class="card rv" style="--c:${g.c};text-decoration:none;color:inherit" href="${esc(x.u)}" target="_blank" rel="noopener"><h3>${x.i} ${esc(x.n)}</h3><p class="mute">${esc(x.d)}</p><div class="chips"><span class="chip">انضم ←</span></div></a>`).join('')}</div>`).join('')}<p class="mute" style="margin-top:36px">الجروبات دي مبادرة طلابية. المواعيد والقرارات الرسمية بتتاخد من إعلانات الكلية.</p></div>`}
+ M.innerHTML=`<div class="w sec">${GROUPS.map((g,k)=>`<h2 data-n="${String(k+1).padStart(2,'0')}" style="margin-top:${k?44:0}px">${g.t}</h2><p class="mute">${g.s}</p><div class="grid">${g.items.map(x=>`<a class="card rv" style="--c:${g.c};text-decoration:none;color:inherit" href="${esc(x.u)}" target="_blank" rel="noopener"><h3>${x.i} ${esc(x.n)}</h3><p class="mute">${esc(x.d)}</p><div class="chips"><span class="chip">${esc(x.b||'انضم ←')}</span></div></a>`).join('')}</div>`).join('')}<p class="mute" style="margin-top:36px">الجروبات دي مبادرة طلابية. المواعيد والقرارات الرسمية بتتاخد من إعلانات الكلية.</p></div>`}
 
 /* ===== جدول المحاضرات ===== */
 const slot=x=>`${x[0]} ${x[1]} · مدرج ${x[3]}${x[4]?' · مجموعة '+x[4]:''}`;
