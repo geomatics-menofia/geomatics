@@ -83,26 +83,53 @@ function subjectPage(){
  const s=S[k],pv=S[(k+S.length-1)%S.length],nx=S[(k+1)%S.length],b=bks(s);document.title=`${s.n} | جيوماتكس`;
  M.innerHTML=`<section class="sh" style="--c:${s.c}"><div class="w"><a class="bc" href="subjects.html">→ كل المواد</a><p class="code" style="display:block">${s.code}</p><h1>${s.i} ${s.n}</h1><p class="lead">${s.desc}</p><div class="chips">${hrs(s)}<span class="chip">الفصل الأول</span>${SCHED.filter(x=>x[2]==s.id).map(x=>`<span class="chip">🗓️ ${slot(x)}</span>`).join('')}${GROUP_OF[s.id]?`<a class="chip" href="${GROUP_OF[s.id]}" target="_blank" rel="noopener">💬 جروب المادة</a>`:''}</div></div></section>
  <div class="w sec two"><div><h2 data-n="01">الكتاب</h2><div class="bkb" style="--c:${s.c}"><a class="cvl sm" href="books.html" aria-label="كل الكتب">${cover(s,!b.length)}</a><div class="bi">${b.length?b.map(x=>bookBtns(x,s)).join(''):`<p class="mute">الكتاب لسه مترفعش للمادة دي، بيتضاف قريب 📚</p><div class="chips"><a class="btn sm" href="books.html">كل الكتب <b>←</b></a></div>`}</div></div>
- <h2 data-n="02" style="margin-top:40px">المحاضرات والملفات</h2>${(LECT[s.id]||[]).length?LECT[s.id].map(x=>bookBtns(x,s)).join(''):emp('لسه مفيش محاضرات للمادة دي.')}
+ <h2 data-n="02" style="margin-top:40px">المحاضرات والملفات</h2>${(LECT[s.id]||[]).map(x=>bookBtns(x,s)).join('')}<div id="lc"></div>
  <h2 data-n="03" style="margin-top:40px">ملخصات الطلبة</h2><div id="fl">${emp('جاري التحميل...')}</div></div><aside><h2 data-n="04">المدرّسون</h2>${s.d.map(x=>pr(x,'محاضر')).join('')}${(s.a||[]).map(x=>pr(x,'عملي')).join('')}<p class="mute" style="font-size:.85rem;margin-top:10px">الوصف تعريفي عام، والمحتوى الرسمي في توصيف المقرر من الكلية.</p>
- <div class="up"><b>ارفع ملخص (صورة أو PDF)</b><input id="ut" maxlength="100" placeholder="عنوان الملخص، مثلاً: محاضرة 2"><input id="ub" maxlength="40" placeholder="اسمك (اختياري)"><input id="hp" class="hp" tabindex="-1" autocomplete="off" aria-hidden="true"><input id="uf" type="file" accept="image/jpeg,image/png,image/webp,application/pdf"><button id="us">رفع</button><small class="mute" id="um">${sb?'الملخص بيظهر بعد مراجعة المسؤول، والحد الأقصى 15MB.':'الربط بقاعدة البيانات غير مفعّل.'}</small></div></aside></div>
+ <div class="up"><b>ارفع ملخص (صورة أو PDF)</b><input id="ut" maxlength="100" placeholder="عنوان الملخص، مثلاً: محاضرة 2"><input id="ub" maxlength="40" placeholder="اسمك (اختياري)"><input id="hp" class="hp" tabindex="-1" autocomplete="off" aria-hidden="true"><select id="uk" hidden><option value="lecture">📘 محاضرة</option><option value="summary">📝 ملخص</option></select><label id="un" class="mute" hidden style="font-size:.9rem"><input type="checkbox" id="unc" checked> ابعت إشعار لكل الطلبة</label><input id="uf" type="file" accept="image/jpeg,image/png,image/webp,application/pdf"><button id="us">رفع</button><small class="mute" id="um">${sb?'الملخص بيظهر بعد مراجعة المسؤول، والحد الأقصى 15MB.':'الربط بقاعدة البيانات غير مفعّل.'}</small></div>${sb?'<div class="up" id="tl" style="border-style:solid"></div>':''}</aside></div>
  <div class="w nav2"><a class="btn" href="subject.html?id=${pv.id}">→ ${pv.n}</a><a class="btn" href="subject.html?id=${nx.id}">${nx.n} ←</a></div>`;
  const L=$('#fl'),pub=p=>sb.storage.from('summaries').getPublicUrl(p).data.publicUrl;
- const load=async()=>{if(!sb){L.innerHTML=emp('الربط بقاعدة البيانات غير مفعّل بعد.');return}
+
+ let me=null;const FN=SITE.url+'/functions/v1/publish',H={apikey:SITE.key},LS={g:()=>{try{return localStorage.getItem('gxc')||''}catch(e){return''}},s:v=>{try{v?localStorage.setItem('gxc',v):localStorage.removeItem('gxc')}catch(e){}}};
+ const call=async(o)=>{const r=await fetch(FN,{method:'POST',headers:{...H,'Content-Type':'application/json'},body:JSON.stringify(o)});return{ok:r.ok,d:await r.json().catch(()=>({}))}};
+ const lc=$('#lc'),rowH=(x,own)=>`<div class="rw"><a class="row" href="${esc(pub(x.file_path))}" target="_blank" rel="noopener"><span>${x.is_pdf?'📄':'🖼️'} ${esc(x.title)}</span><small class="mute">${x.verified?'✅ ':''}${esc(x.uploader||'طالب')}</small></a>${own?`<button class="del" data-id="${esc(x.id)}" aria-label="حذف" title="حذف">🗑</button>`:''}</div>`;
+ const hasStatic=(LECT[s.id]||[]).length>0;
+ const load=async()=>{if(!sb){L.innerHTML=emp('الربط بقاعدة البيانات غير مفعّل بعد.');if(!hasStatic)lc.innerHTML=emp('لسه مفيش محاضرات للمادة دي.');return}
   const r=await sb.from('summaries').select('*').eq('subject',s.id).eq('status','approved').order('created_at',{ascending:false});
-  L.innerHTML=r.error?emp('تعذّر تحميل الملخصات، جرّب بعد شوية.'):r.data.length?r.data.map(x=>`<a class="row" href="${esc(pub(x.file_path))}" target="_blank" rel="noopener"><span>${x.is_pdf?'📄':'🖼️'} ${esc(x.title)}</span><small class="mute">${esc(x.uploader||'طالب')}</small></a>`).join(''):emp('لسه مفيش ملخصات للمادة دي. كن أول من يرفع!')};
+  if(r.error){L.innerHTML=emp('تعذّر تحميل الملخصات، جرّب بعد شوية.');if(!hasStatic)lc.innerHTML=emp('لسه مفيش محاضرات للمادة دي.');return}
+  const own=x=>!!(me&&x.publisher_id&&x.publisher_id==me.id),lec=r.data.filter(x=>x.kind=='lecture'),sm=r.data.filter(x=>x.kind!='lecture');
+  lc.innerHTML=lec.length?lec.map(x=>rowH(x,own(x))).join(''):hasStatic?'':emp('لسه مفيش محاضرات للمادة دي.');
+  L.innerHTML=sm.length?sm.map(x=>rowH(x,own(x))).join(''):emp('لسه مفيش ملخصات للمادة دي. كن أول من يرفع!');
+  $$('.del',M).forEach(b=>b.onclick=async()=>{if(!confirm('تحذف الملف ده؟'))return;
+   const d=await call({action:'delete',code:me.code,id:b.dataset.id});if(!d.ok){alert('معرفتش أحذف الملف');return}load()})};
+ const paintAuth=()=>{const tl=$('#tl');if(!tl)return;
+  $('#uk').hidden=$('#un').hidden=!me;
+  $('#us').textContent=me?'رفع ونشر فوراً':'رفع';
+  $('#ub').hidden=!!me;
+  $('#um').textContent=me?'بتنشر كـ ✅ '+me.name+': الملف بيظهر فوراً من غير مراجعة. الحد الأقصى 15MB.':'الملخص بيظهر بعد مراجعة المسؤول، والحد الأقصى 15MB.';
+  tl.innerHTML=me?`<b>✅ ${esc(me.name)}</b><button id="lo" type="button">خروج</button>`:`<b>🔐 النشر المباشر (للمدرّسين والليدر)</b><input id="lk" placeholder="كود النشر" dir="ltr" autocomplete="off" autocapitalize="characters"><button id="li" type="button">دخول</button><small class="mute" id="lm">الكود بيديهولك مسؤول الموقع.</small>`;
+  const lo=$('#lo');if(lo)lo.onclick=()=>{LS.s('');me=null;paintAuth();load()};
+  const li=$('#li');if(li)li.onclick=async()=>{const m=$('#lm'),c=$('#lk').value.trim();if(!c)return;m.textContent='جاري التأكد...';
+   if(!await tryCode(c)){m.textContent='الكود غلط أو مش مسموح بالمادة دي.';return}
+   paintAuth();load()}};
+ const tryCode=async c=>{try{const r=await call({action:'check',code:c,subject:s.id});if(r.ok&&r.d.name){me={name:r.d.name,id:r.d.id,code:c};LS.s(c);return true}}catch(e){}me=null;return false};
+ const initAuth=async()=>{me=null;const c=LS.g();if(sb&&c&&!await tryCode(c))LS.s('');paintAuth()};
  $('#us').onclick=async()=>{const f=$('#uf').files[0],m=$('#um');if($('#hp').value)return;
   if(!sb){m.textContent='الربط بقاعدة البيانات غير مفعّل.';return}
   if(!f){m.textContent='اختار ملف الأول';return}
   const X={'application/pdf':'pdf','image/jpeg':'jpg','image/png':'png','image/webp':'webp'}[f.type];
   if(!X){m.textContent='صور (JPG/PNG/WEBP) أو PDF بس';return}
   if(f.size>15e6){m.textContent='الملف أكبر من 15MB';return}
-  m.textContent='جاري الرفع...';$('#us').disabled=true;const path=s.id+'/'+crypto.randomUUID()+'.'+X;
+  m.textContent='جاري الرفع...';$('#us').disabled=true;const title=$('#ut').value.trim().slice(0,100)||f.name.slice(0,100);
+  if(me){const fd=new FormData();fd.append('action','upload');fd.append('code',me.code);fd.append('subject',s.id);fd.append('kind',$('#uk').value);fd.append('title',title);fd.append('notify',$('#unc').checked?'1':'0');fd.append('file',f);
+   let ok=false;try{const r=await fetch(FN,{method:'POST',headers:H,body:fd});ok=r.ok}catch(e){}
+   $('#us').disabled=false;if(!ok){m.textContent='حصلت مشكلة في النشر. جرّب تاني.';return}
+   $('#uf').value='';$('#ut').value='';m.textContent='اتنشر ✅'+($('#unc').checked?' وبعتنا إشعار للطلبة':'');load();return}
+  const path=s.id+'/'+crypto.randomUUID()+'.'+X;
   const u=await sb.storage.from('summaries').upload(path,f,{contentType:f.type});
-  const i=u.error?u:await sb.from('summaries').insert({subject:s.id,title:$('#ut').value.trim().slice(0,100)||f.name.slice(0,100),uploader:$('#ub').value.trim().slice(0,40)||'طالب',file_path:path,is_pdf:X=='pdf'});
+  const i=u.error?u:await sb.from('summaries').insert({subject:s.id,title,uploader:$('#ub').value.trim().slice(0,40)||'طالب',file_path:path,is_pdf:X=='pdf'});
   $('#us').disabled=false;if(i.error){m.textContent='حصلت مشكلة، جرّب تاني';return}
   m.textContent='تم الرفع! هيظهر بعد مراجعة المسؤول ✅';$('#uf').value='';$('#ut').value=''};
- load()}
+ initAuth().then(load)}
 
 /* ===== الأدوات ===== */
 const fld=([k,l,v,ty,o])=>`<label class="fl"><span>${l}</span>${ty=='ta'?`<textarea data-f="${k}" rows="5" dir="ltr">${v}</textarea>`:ty=='sel'?`<select data-f="${k}">${o.map(([a,b])=>`<option value="${a}"${a==v?' selected':''}>${b}</option>`).join('')}</select>`:`<input data-f="${k}" value="${v}" inputmode="decimal" dir="ltr">`}</label>`;

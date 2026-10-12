@@ -1,0 +1,24 @@
+<!DOCTYPE html><html lang="ar" dir="rtl" data-t="dark" data-pal="emerald" data-fs="m" data-r="m" data-bg="off" data-an="on"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data:; connect-src 'self' https://*.supabase.co; object-src 'none'; base-uri 'self'; form-action 'none'"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex,nofollow"><title>إرسال إشعار | جيوماتكس</title><link rel="icon" href="logo.svg" type="image/svg+xml"><link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;600;700&display=swap" rel="stylesheet"><link rel="stylesheet" href="style.css"></head>
+<body><main class="w sec" style="max-width:560px">
+<h2>لوحة المسؤول</h2>
+<input id="k" type="password" placeholder="كلمة السر (ADMIN_KEY)" style="padding:12px;border-radius:12px;border:1px solid var(--gb);background:var(--glass);color:var(--ink);width:100%;margin:6px 0 24px">
+<h2>إرسال إشعار للطلبة 🔔</h2>
+<p class="mute">الإشعار هيوصل لكل اللي فعّلوا الإشعارات من الموقع. الصفحة دي ليك إنت بس: ماتنشرش رابطها ولا كلمة السر.</p>
+<form id="f" style="display:grid;gap:12px;margin-top:18px" autocomplete="off">
+<input id="t" placeholder="العنوان (مثلاً: محاضرة جديدة)" maxlength="100" required style="padding:12px;border-radius:12px;border:1px solid var(--gb);background:var(--glass);color:var(--ink)">
+<textarea id="b" placeholder="الرسالة (مثلاً: اتضافت محاضرة الجغرافيا البشرية)" maxlength="300" rows="3" required style="padding:12px;border-radius:12px;border:1px solid var(--gb);background:var(--glass);color:var(--ink)"></textarea>
+<select id="u" style="padding:12px;border-radius:12px;border:1px solid var(--gb);background:var(--glass);color:var(--ink)"><option value="./index.html">الصفحة الرئيسية</option><option value="./subjects.html">المواد</option><option value="./books.html">الكتب والمحاضرات</option><option value="./schedule.html">الجدول</option><option value="./groups.html">الجروبات والروابط</option></select>
+<button id="go" class="btn" type="submit" style="padding:12px;border-radius:12px;border:0;font-weight:700;cursor:pointer">إرسال</button>
+<p id="msg" role="status"></p>
+</form>
+<h2 style="margin-top:44px">الدكاتره والليدر (النشر المباشر) 🔑</h2>
+<p class="mute">اكتب الاسم اللي هيظهر للطلبة، واختار المواد المسموحة (سيبها فاضية لكل المواد)، واضغط إنشاء. هيطلعلك كود تبعته للشخص. الكود بيظهر مرة واحدة بس.</p>
+<form id="pf" style="display:grid;gap:12px;margin-top:14px" autocomplete="off">
+<input id="pn" placeholder="الاسم (مثلاً: أ.د/ صبحي رمضان)" maxlength="80" required style="padding:12px;border-radius:12px;border:1px solid var(--gb);background:var(--glass);color:var(--ink)">
+<select id="ps" multiple size="8" style="padding:12px;border-radius:12px;border:1px solid var(--gb);background:var(--glass);color:var(--ink)"></select>
+<button id="pg" class="btn" type="submit" style="padding:12px;border-radius:12px;border:0;font-weight:700;cursor:pointer">إنشاء كود</button>
+<p id="pm" role="status" style="font-size:1.2rem;direction:ltr;text-align:center;user-select:all"></p>
+</form>
+<div id="pl" style="margin-top:20px"></div>
+</main>
+<script src="data.js"></script><script src="admin.js"></script></body></html>
