@@ -105,7 +105,7 @@ function subjectPage(){
   $('#uk').hidden=$('#un').hidden=!me;
   $('#us').textContent=me?'رفع ونشر فوراً':'رفع';
   $('#ub').hidden=!!me;
-  $('#um').textContent=me?'بتنشر كـ ✅ '+me.name+': الملف بيظهر فوراً من غير مراجعة. الحد الأقصى 15MB.':'الملخص بيظهر بعد مراجعة المسؤول، والحد الأقصى 15MB.';
+  $('#um').textContent=me?'بتنشر كـ ✅ '+me.name+': الملف بيظهر فوراً من غير مراجعة. الحد الأقصى 50MB.':'الملخص بيظهر بعد مراجعة المسؤول، والحد الأقصى 50MB.';
   tl.innerHTML=me?`<b>✅ ${esc(me.name)}</b><button id="lo" type="button">خروج</button>`:`<b>🔐 النشر المباشر (للمدرّسين والليدر)</b><input id="lk" placeholder="كود النشر" dir="ltr" autocomplete="off" autocapitalize="characters"><button id="li" type="button">دخول</button><small class="mute" id="lm">الكود بيديهولك مسؤول الموقع.</small>`;
   const lo=$('#lo');if(lo)lo.onclick=()=>{LS.s('');me=null;paintAuth();load()};
   const li=$('#li');if(li)li.onclick=async()=>{const m=$('#lm'),c=$('#lk').value.trim();if(!c)return;m.textContent='جاري التأكد...';
@@ -118,7 +118,7 @@ function subjectPage(){
   if(!f){m.textContent='اختار ملف الأول';return}
   const X={'application/pdf':'pdf','image/jpeg':'jpg','image/png':'png','image/webp':'webp'}[f.type];
   if(!X){m.textContent='صور (JPG/PNG/WEBP) أو PDF بس';return}
-  if(f.size>15e6){m.textContent='الملف أكبر من 15MB';return}
+  if(f.size>15e6){m.textContent='الملف أكبر من 50MB';return}
   m.textContent='جاري الرفع...';$('#us').disabled=true;const title=$('#ut').value.trim().slice(0,100)||f.name.slice(0,100);
   if(me){const fd=new FormData();fd.append('action','upload');fd.append('code',me.code);fd.append('subject',s.id);fd.append('kind',$('#uk').value);fd.append('title',title);fd.append('notify',$('#unc').checked?'1':'0');fd.append('file',f);
    let ok=false;try{const r=await fetch(FN,{method:'POST',headers:H,body:fd});ok=r.ok}catch(e){}
@@ -228,7 +228,7 @@ function schedulePage(){
 
 /* ===== عن المنصة ===== */
 function aboutPage(){
- const q=[['هل الموقع رسمي؟','لا، دي مبادرة طلابية مستقلة. المواعيد والقرارات الرسمية بتتاخد من إعلانات الكلية.'],['إزاي أرفع ملخص؟','ادخل على صفحة المادة، اكتب عنوان الملخص، واختار صورة أو PDF لحد 15MB. بيظهر بعد المراجعة.'],['ليه ملخصي ما ظهرش؟','كل ملخص بيتراجع يدوياً قبل النشر، فممكن ياخد شوية وقت.'],['فين كتب المواد؟','في قسم الكتب، وكمان في صفحة كل مادة. الكتب بتتضاف أول بأول، والمادة اللي كتابها لسه مجاش بتظهر "قريباً".'],['مش عاجبني شكل الموقع، أعمل إيه؟','ادخل على <a href="look.html">لو مش عاجبك شكل الموقع</a> وغيّر الألوان والإضاءة وحجم الخط والحواف زي ما تحب.'],['الأدوات دقيقة؟','بتستخدم صيغ قياسية (زي هافرساين لحساب المسافة على سطح الأرض)، ومناسبة للدراسة والتقدير. للأعمال الهندسية الرسمية استخدم أجهزة وبرامج معتمدة.']];
+ const q=[['هل الموقع رسمي؟','لا، دي مبادرة طلابية مستقلة. المواعيد والقرارات الرسمية بتتاخد من إعلانات الكلية.'],['إزاي أرفع ملخص؟','ادخل على صفحة المادة، اكتب عنوان الملخص، واختار صورة أو PDF لحد 50MB. بيظهر بعد المراجعة.'],['ليه ملخصي ما ظهرش؟','كل ملخص بيتراجع يدوياً قبل النشر، فممكن ياخد شوية وقت.'],['فين كتب المواد؟','في قسم الكتب، وكمان في صفحة كل مادة. الكتب بتتضاف أول بأول، والمادة اللي كتابها لسه مجاش بتظهر "قريباً".'],['مش عاجبني شكل الموقع، أعمل إيه؟','ادخل على <a href="look.html">لو مش عاجبك شكل الموقع</a> وغيّر الألوان والإضاءة وحجم الخط والحواف زي ما تحب.'],['الأدوات دقيقة؟','بتستخدم صيغ قياسية (زي هافرساين لحساب المسافة على سطح الأرض)، ومناسبة للدراسة والتقدير. للأعمال الهندسية الرسمية استخدم أجهزة وبرامج معتمدة.']];
  M.innerHTML=`<div class="w sec"><h2 data-n="06">عن المنصة</h2><p class="lead">منصة مجانية بتجمع مواد برنامج الجيوماتكس وكتبها ودكاترتها وملخصات الطلبة، وبتقدّم أدوات مساحة وخرائط مفيدة لأي طالب أو مهتم.</p><div class="grid"><div class="card rv"><h3>🆓 مجانية</h3><p class="mute">من غير اشتراك ولا تسجيل.</p></div><div class="card rv"><h3>🤝 بجهود الطلبة</h3><p class="mute">الملخصات بيرفعها زمايلك وبتتراجع قبل النشر.</p></div><div class="card rv"><h3>📖 كتب المواد</h3><p class="mute">كتاب لكل مادة، تقراه أونلاين أو تحمّله.</p></div><div class="card rv"><h3>🧭 أدوات حقيقية</h3><p class="mute">حسابات إحداثيات ومساحة بتفيدك في الدراسة والشغل.</p></div></div>
  <h2 data-n="07" style="margin-top:50px">إزاي تساهم؟</h2><div class="grid"><div class="card rv"><h3>1. صوّر</h3><p class="mute">لخّص المحاضرة وصوّر الكراسة أو اعملها PDF.</p></div><div class="card rv"><h3>2. ارفع</h3><p class="mute">افتح صفحة المادة وارفع الملف بعنوان واضح.</p></div><div class="card rv"><h3>3. شارك</h3><p class="mute">بعد المراجعة بيظهر لكل الدفعة، وابعت الرابط لزمايلك.</p></div></div>
  <h2 data-n="08" style="margin-top:50px">أسئلة شائعة</h2>${q.map(([a,b])=>`<details><summary>${a}</summary><p>${b}</p></details>`).join('')}
