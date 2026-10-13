@@ -235,3 +235,14 @@ function aboutPage(){
  <h2 data-n="09" style="margin-top:50px">المطوّر</h2><div class="card" style="--c:var(--g1);margin-top:18px"><div class="av" style="background:var(--g1);color:var(--on)">${esc(au)[0]}</div><h3>${esc(au)}</h3><p class="mute">طالب بالفرقة الأولى، برنامج الجيوماتكس. عندك فكرة أو عايز تساهم في التطوير؟ كلمني.</p><div class="chips"><a class="chip" href="tel:+2${SITE.phone}" dir="ltr">📞 ${SITE.phone}</a>${lk}</div></div></div>`}
 
 ({index:home,subjects:subjectsPage,subject:subjectPage,books:booksPage,doctors:doctorsPage,groups:groupsPage,schedule:schedulePage,tools:toolsPage,look:lookPage,about:aboutPage})[P]();fin();applyGX();
+/* إشعارات التطبيق (بيشتغل جوه الـ APK بس، وفي المتصفح مبيعملش حاجة) */
+(async () => {
+  const cap = window.Capacitor;
+  if (!cap || !cap.isNativePlatform || !cap.isNativePlatform()) return;
+  const FM = cap.Plugins && cap.Plugins.FirebaseMessaging;
+  if (!FM) return;
+  try {
+    const p = await FM.requestPermissions();
+    if (p.receive === 'granted') await FM.subscribeToTopic({ topic: 'all' });
+  } catch (e) { console.warn('push', e); }
+})();
