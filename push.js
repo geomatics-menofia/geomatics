@@ -7,6 +7,8 @@ if(!hd)return;
 const ios=/iphone|ipad|ipod/i.test(navigator.userAgent)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1);
 const standalone=matchMedia('(display-mode: standalone)').matches||navigator.standalone;
 const supported='serviceWorker' in navigator&&'PushManager' in window&&'Notification' in window;
+/* جوه تطبيق الأندرويد أو متصفح مش بيدعم الإشعارات: مفيش لازمة للزرار فنشيله (الآيفون بيفضل عشان خطوات التثبيت) */
+if((window.Capacitor&&Capacitor.isNativePlatform&&Capacitor.isNativePlatform())||(!supported&&!ios))return;
 
 const b=document.createElement('button');
 b.id='pb';b.type='button';b.textContent='🔔';
