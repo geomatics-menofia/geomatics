@@ -1,5 +1,5 @@
 const SITE={
- author:'أحمد زهران',
+ author:'',
  vapid:'', /* المفتاح العام للإشعارات (VAPID public key). شوف supabase/README-push.txt */
  ai:true, /* لازم دالة ask تكون متعملة في Supabase (شوف ask-function.ts) */
  phone:'01094751342',
