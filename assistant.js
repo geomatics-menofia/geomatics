@@ -58,7 +58,7 @@ const H={
   const it=GROUPS[GROUPS.length-1].items;
   const m=it.filter(x=>(has(q,['ابن الهيثم','برنامج','بوابه','خدمات'])&&/هيثم/.test(AR(x.n)))||(has(q,['تعلم','منصه','الكتروني','ايليرنينج'])&&/تعلم/.test(AR(x.n)))||(has(q,['دفع','رسوم','مصروفات','سداد'])&&/دفع/.test(AR(x.n)))||(has(q,['فيسبوك','صفحه','اخبار'])&&/صفحه|الصفحه/.test(AR(x.n)))||(has(q,['ارشاد','توجيه'])&&/ارشاد/.test(AR(x.n)))||(has(q,['جدول'])&&/جدول/.test(AR(x.n)))||(has(q,['لايحه'])&&/لايحه/.test(AR(x.n))));
   return (m.length?m:it).map(x=>`${x.i} ${A(x.u,x.n)}<br><small>${E(x.d)}</small>`).join('<br>')},
- upload(){return `لرفع ملخص: افتح صفحة المادة، اكتب عنوان الملخص، واختار صورة أو PDF لحد 50MB. بيظهر بعد مراجعة المسؤول.<div class="ai-ch">${S.map(s=>`<a class="chip" href="subject.html?id=${s.id}">${s.i} ${E(s.n)}</a>`).join('')}</div>`},
+ upload(){return `لرفع ملخص: افتح صفحة المادة، اكتب عنوان الملخص، واختار صورة أو PDF لحد 15MB. بيظهر بعد مراجعة المسؤول.<div class="ai-ch">${S.map(s=>`<a class="chip" href="subject.html?id=${s.id}">${s.i} ${E(s.n)}</a>`).join('')}</div>`},
  contact(){return `المطوّر: <b>${E(SITE.author)}</b><br>📞 <a href="tel:+2${E(SITE.phone)}" dir="ltr">${E(SITE.phone)}</a>${SITE.links.whatsapp?'<br>💬 '+A(SITE.links.whatsapp,'كلمني على واتساب'):''}`},
  tools(){return `الأدوات: ${TOOLS.map(t=>t.t).join('، ')} وحاسبة المعدل وعدّاد الامتحان.<br>${A('tools.html','افتح الأدوات',1)}`},
  look(){return `غيّر الألوان والإضاءة وحجم الخط من ${A('look.html','صفحة المظهر',1)}. ولو الموبايل بطيء، اقفل "الأنيميشن" من هناك.`},

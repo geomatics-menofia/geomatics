@@ -1,6 +1,6 @@
 const SITE={
  author:'أحمد',
- vapid:'BMG6AX5hh6jmEIXtY2kDy7LVJulL1rRvZmV9Wnj3HiaVnRwHoacWfil-bQ0zKHLnKs0-sOOD802MJKxkTyiJ0_M', /* المفتاح العام للإشعارات (VAPID public key). شوف supabase/README-push.txt */
+ vapid:'', /* المفتاح العام للإشعارات (VAPID public key). شوف supabase/README-push.txt */
  ai:true, /* لازم دالة ask تكون متعملة في Supabase (شوف ask-function.ts) */
  phone:'01094751342',
  head:'أ.د/ موسى فتحي', /* رئيس القسم */
