@@ -1,7 +1,7 @@
 @font-face{font-family:AppleEmoji;src:url(apple-emoji.woff) format("woff");font-display:swap}
 @view-transition{navigation:auto}
 /* ============ الأساس والثيمات ============ */
-:root{--sp:cubic-bezier(.34,1.56,.64,1);--f:AppleEmoji,'IBM Plex Sans Arabic',Cairo,Tahoma,sans-serif;--fd:AppleEmoji,'IBM Plex Sans Arabic',Cairo,Tahoma,sans-serif;--m:AppleEmoji,'IBM Plex Mono',ui-monospace,monospace;--r:24px;--r2:18px;--rp:99px;--ba:22%;
+:root{--sp:cubic-bezier(.34,1.56,.64,1);--f:AppleEmoji,'IBM Plex Sans Arabic',Cairo,Tahoma,sans-serif;--fd:AppleEmoji,'El Messiri','IBM Plex Sans Arabic',Cairo,Tahoma,sans-serif;--m:AppleEmoji,'IBM Plex Mono',ui-monospace,monospace;--r:24px;--r2:18px;--rp:99px;--ba:22%;
  --ink:#EAF2FF;--mute:#93A4BC;--glass:rgba(255,255,255,.06);--gb:rgba(255,255,255,.13);--hi:rgba(255,255,255,.2);--line:rgba(255,255,255,.12);--on:#07131f;
  --bg:#060D17;--g1:#34D399;--g2:#FDE047;--g3:#FB923C;color-scheme:dark}
 :root[data-t=light]{--ink:#0B1B2E;--mute:#506279;--glass:rgba(255,255,255,.55);--gb:rgba(255,255,255,.85);--hi:rgba(255,255,255,.9);--line:rgba(11,27,46,.12);--on:#fff;--ba:26%;color-scheme:light}
@@ -167,15 +167,15 @@ input::file-selector-button{margin-inline-end:10px;border:0;border-radius:var(--
 .bi h3{font:700 1.2rem/1.4 var(--fd)}
 .bk-r{display:grid;gap:2px;margin-top:6px}.bk-r b{font-weight:700}
 .cvl{flex:none;text-decoration:none;display:block;perspective:700px}
-.cv{--w:128px;position:relative;width:var(--w);aspect-ratio:3/4;display:grid;grid-template-rows:auto 1fr auto auto;justify-items:start;padding:12px 16px 12px 10px;color:#07131f;overflow:hidden;
+.cv{--w:150px;position:relative;width:var(--w);aspect-ratio:3/4;display:grid;grid-template-rows:auto 1fr auto auto;justify-items:start;padding:12px 16px 12px 10px;color:#07131f;overflow:hidden;
  background:linear-gradient(150deg,color-mix(in srgb,var(--c) 92%,#fff),color-mix(in srgb,var(--c) 58%,#000));
  border-radius:12px 4px 4px 12px;box-shadow:0 18px 30px -14px color-mix(in srgb,var(--c) 70%,#000),inset 0 1px 0 rgba(255,255,255,.5);transition:transform .5s var(--sp)}
 .cv::before{content:"";position:absolute;inset-block:0;inset-inline-start:0;width:14px;background:linear-gradient(90deg,rgba(0,0,0,.3),rgba(255,255,255,.18) 55%,rgba(0,0,0,.12))}
 .cv::after{content:"";position:absolute;inset:0;pointer-events:none;background:repeating-radial-gradient(circle at 78% 24%,transparent 0 9px,rgba(0,0,0,.07) 9px 10px)}
 .cv>*{position:relative;z-index:1}
 .cv small{font:600 .62rem var(--m);direction:ltr;opacity:.75;padding-inline-start:12px}
-.cv i{font-style:normal;font-size:2.6rem;align-self:center;justify-self:center;filter:drop-shadow(0 4px 6px rgba(0,0,0,.25));padding-inline-start:12px}
-.cv b{font:700 .9rem/1.6 var(--fd);padding-block:2px 4px;padding-inline-start:12px;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
+.cv i{font-style:normal;font-size:2.1rem;align-self:center;justify-self:center;filter:drop-shadow(0 4px 6px rgba(0,0,0,.25));padding-inline-start:12px}
+.cv b{position:relative;font:700 .86rem/1.5 var(--fd);padding-block:2px 4px;padding-inline-start:12px;display:-webkit-box;-webkit-line-clamp:4;-webkit-box-orient:vertical;overflow:hidden;mask-image:linear-gradient(to bottom,#000 82%,transparent 100%);-webkit-mask-image:linear-gradient(to bottom,#000 82%,transparent 100%)}
 .cv span{font:500 .55rem var(--m);letter-spacing:.14em;opacity:.65;padding-inline-start:12px;margin-top:4px;direction:ltr}
 .bcard:hover .cv{transform:rotateY(14deg) translateY(-4px)}
 .cv .soon{position:absolute;top:10px;inset-inline-end:-30px;width:110px;text-align:center;transform:rotate(-38deg);background:var(--g3);color:var(--on);font:700 .62rem/1.9 var(--f);font-style:normal;box-shadow:0 2px 6px rgba(0,0,0,.3);z-index:2}
@@ -183,7 +183,7 @@ html[dir=rtl] .cv .soon{inset-inline-end:auto;inset-inline-start:auto;left:-30px
 .bkb{display:flex;gap:18px;align-items:center;padding:16px;margin-top:18px}
 .cvl.sm .cv{--w:92px;padding:8px 10px 8px 6px}.cvl.sm .cv i{font-size:1.9rem}.cvl.sm .cv b{display:none}.cvl.sm .cv small,.cvl.sm .cv span{display:none}.cvl.sm .cv::before{width:9px}
 @media(max-width:480px){.pal{padding:12px}.pal small{font-size:.74rem}}
-@media(max-width:400px){.bcard{gap:14px;padding:16px}.cv{--w:108px}}
+@media(max-width:400px){.bcard{gap:14px;padding:16px}.cv{--w:124px}}
 
 /* ============ صفحة المادة ============ */
 .sh{margin:18px auto 0;max-width:1044px;padding:34px 0;overflow:hidden}
