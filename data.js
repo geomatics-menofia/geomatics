@@ -1,5 +1,5 @@
 const SITE={
- author:'',
+ /* اسم صاحب الموقع (أحمد هاني) متثبّت جوه app.js ومينفعش يتغير من هنا */
  vapid:'', /* المفتاح العام للإشعارات (VAPID public key). شوف supabase/README-push.txt */
  ai:true, /* لازم دالة ask تكون متعملة في Supabase (شوف ask-function.ts) */
  phone:'01094751342',
