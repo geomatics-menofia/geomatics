@@ -50,7 +50,7 @@ function load(file,simp,L){return fetch(BASE+file).then(r=>{if(!r.ok)throw 0;ret
 /* الخريطة بتتحمّل بعد ما الصفحة تهدى عشان متعطلش أول ظهور (وعلى الموبايل بنكتفي بالنسخة الأخف في الوضع الاحتياطي) */
 const later=f=>('requestIdleCallback' in window)?requestIdleCallback(f,{timeout:2500}):setTimeout(f,300);
 later(()=>{load('countries-110m.json',0,1).then(()=>later(()=>{if(!co&&!SOFT)load('countries-50m.json',.0008,2)}))});
-let loc={lat:30.55,lon:31.01},src='def';
+let loc={lat:31.11,lon:30.94},src='def';
 try{const s=JSON.parse(localStorage.gxloc||'null');if(s&&isFinite(s.lat)&&isFinite(s.lon)){loc=s;src='gps'}}catch(e){}
 const save=(l,s)=>{loc=l;src=s;try{localStorage.gxloc=JSON.stringify(l)}catch(e){}};
 async function byIP(){try{const r=await fetch('https://get.geojs.io/v1/ip/geo.json');const j=await r.json();const la=parseFloat(j.latitude),lo=parseFloat(j.longitude);if(isFinite(la)&&isFinite(lo))save({lat:+la.toFixed(2),lon:+lo.toFixed(2)},'ip')}catch(e){}}
@@ -114,7 +114,7 @@ function draw(t){if(!S)return;const c=S/2,dk=RT.dataset.t!='light',en=RT.lang=='
  if(z>.05){const X=c+R*x,Y=c-R*y,k=(t%2000)/2000;
   ctx.strokeStyle=css('--g3')||'#FB923C';ctx.globalAlpha=.8*(1-k);ctx.lineWidth=S*.004;ctx.beginPath();ctx.arc(X,Y,S*.01+S*.045*k,0,6.3);ctx.stroke();ctx.globalAlpha=1;
   ctx.fillStyle=ctx.strokeStyle;ctx.beginPath();ctx.arc(X,Y,S*.011,0,6.3);ctx.fill();ctx.strokeStyle='#fff';ctx.lineWidth=S*.003;ctx.stroke();
-  const right=X<c+R*.45,cap=src=='gps'?(en?'You are here':'موقعك'):src=='ip'?(en?'Approx. location':'موقعك التقريبي'):(en?'Menoufia':'المنوفية');
+  const right=X<c+R*.45,cap=src=='gps'?(en?'You are here':'موقعك'):src=='ip'?(en?'Approx. location':'موقعك التقريبي'):(en?'Kafr El-Sheikh':'كفر الشيخ');
   ctx.save();ctx.textAlign=right?'left':'right';const ox=(right?1:-1)*S*.025;ctx.shadowColor='rgba(0,0,0,.7)';ctx.shadowBlur=S*.01;ctx.fillStyle='#fff';
   const f1=Math.max(S*.03,11*dpr),f2=Math.max(S*.024,9.5*dpr);ctx.font=`500 ${f1}px "IBM Plex Mono",monospace`;ctx.fillText(fmt(loc),X+ox,Y-S*.012);
   ctx.font=`500 ${f2}px "IBM Plex Sans Arabic",sans-serif`;ctx.globalAlpha=.85;ctx.fillText(cap,X+ox,Y+S*.022);ctx.restore()}
@@ -246,7 +246,7 @@ function drawGL(t){
  if(z>.05){const X=c+R*x,Y=c-R*y,k=(t%2000)/2000;
   ctx.strokeStyle=css('--g3')||'#FB923C';ctx.globalAlpha=.8*(1-k);ctx.lineWidth=S*.004;ctx.beginPath();ctx.arc(X,Y,S*.01+S*.045*k,0,6.3);ctx.stroke();ctx.globalAlpha=1;
   ctx.fillStyle=ctx.strokeStyle;ctx.beginPath();ctx.arc(X,Y,S*.011,0,6.3);ctx.fill();ctx.strokeStyle='#fff';ctx.lineWidth=S*.003;ctx.stroke();
-  const right=X<c+R*.45,cap=src=='gps'?(en?'You are here':'موقعك'):src=='ip'?(en?'Approx. location':'موقعك التقريبي'):(en?'Menoufia':'المنوفية');
+  const right=X<c+R*.45,cap=src=='gps'?(en?'You are here':'موقعك'):src=='ip'?(en?'Approx. location':'موقعك التقريبي'):(en?'Kafr El-Sheikh':'كفر الشيخ');
   const f1=Math.max(S*.03,11*dpr),f2=Math.max(S*.024,9.5*dpr),pad=S*.03,wd=Math.max(f1*9,f2*10)+pad*2,ox=(right?1:-1)*S*.025;
   const sp=sprite({k:'pin'+(right?'R':'L'),s:[en,S,loc.lat,loc.lon,src,right].join()},wd,f1*2.4+pad*2,g=>{const ax=right?pad:wd-pad,ay=f1*1.2+pad;g.textAlign=right?'left':'right';g.shadowColor='rgba(0,0,0,.7)';g.shadowBlur=S*.01;g.fillStyle='#fff';
    g.font=mono(f1);g.fillText(fmt(loc),ax,ay-S*.012);g.font=sans(f2);g.globalAlpha=.85;g.fillText(cap,ax,ay+S*.022)});

@@ -3,7 +3,7 @@
 const RT=document.documentElement;
 const EN={
 'الكل':'All','فيها عملي':'With practical','نظري فقط':'Theory only','الرئيسية':'Home','المواد':'Subjects','الكتب':'Books','الدكاترة':'Doctors','الجروبات':'Groups','الأدوات':'Tools','الجدول':'Schedule',
-'جيوماتكس':'Geomatics','كلية الآداب':'Faculty of Arts','جامعة المنوفية':'Menoufia University',
+'جيوماتكس':'Geomatics','كلية الآداب':'Faculty of Arts','جامعة كفر الشيخ':'Kafr El-Sheikh University',
 'نقيس.':'We measure.','نحلّل.':'We analyze.','نرسم المستقبل.':'We map the future.',
 'منصة الدفعة: المواد والكتب والدكاترة وملخصات الطلبة، وأدوات مساحة وخرائط بتشتغل من الموبايل.':'The batch platform: subjects, books, doctors, student summaries, plus surveying and mapping tools that work on your phone.',
 'ابدأ المذاكرة':'Start studying','الفهرس':'Contents','كل حاجة في الموقع، من هنا لهناك.':'Everything on the site, from here to there.',
@@ -24,7 +24,7 @@ const EN={
 'الوصف تعريفي عام، والمحتوى الرسمي في توصيف المقرر من الكلية.':"The description is a general overview; the official content is in the college's course specification.",
 'الفصل الأول 2026/2027، المستوى الأول (الأسبوع الثاني). الجدول عرضة للتغيير، راجع إعلانات الكلية.':'First semester 2026/2027, Level 1 (week 2). The schedule may change, check the college announcements.',
 'الجروبات دي مبادرة طلابية. المواعيد والقرارات الرسمية بتتاخد من إعلانات الكلية.':'These groups are a student initiative. Official schedules and decisions come from the college announcements.',
-'برنامج الجيوماتكس، كلية الآداب، جامعة المنوفية. مبادرة طلابية وليست موقعاً رسمياً للكلية.':'Geomatics Program, Faculty of Arts, Menoufia University. A student initiative, not an official college website.',
+'برنامج الجيوماتكس، كلية الآداب، جامعة كفر الشيخ. مبادرة طلابية وليست موقعاً رسمياً للكلية.':'Geomatics Program, Faculty of Arts, Kafr El-Sheikh University. A student initiative, not an official college website.',
 'صُنع بواسطة':'Made by','لائحة القسم':'Department regulations','أحمد':'Ahmed','أحمد هاني':'Ahmed Hany','تخطَّ للمحتوى':'Skip to content','الشمال':'North',
 'القائمة':'Menu','تبديل الوضع بين الليلي والنهاري':'Switch between dark and light mode','ليلي / نهاري':'Dark / Light','جيوماتكس، الرئيسية':'Geomatics, Home',
 'تغيير اللغة':'Change language','English / عربي':'English / عربي','كرة أرضية تفاعلية':'Interactive globe','اضغط لتحديث موقعك':'Click to refresh your location',
@@ -96,7 +96,7 @@ Object.assign(EN,{
 'الدفعة والسكاشن':'Batch & Sections','جروبات الدفعة والعملي وكلية الآداب.':'Groups for the batch, practical sections and the Faculty of Arts.','الدفعة (فرقة أولى جيوماتكس)':'The batch (Geomatics, first year)',
 'الجروب العام للدفعة':'General batch group','سكشن مبادئ المساحة والخرائط':'Principles of Surveying & Mapping section','جروب العملي':'Practical group','جروب عام لطلاب الكلية':'General group for college students',
 'التربية الوطنية والعسكرية':'National & Military Education','قنوات تيليجرام للمتطلبات.':'Telegram channels for the requirements.','التربية الوطنية (بنات)':'National Education (girls)','قناة تيليجرام':'Telegram channel','التربية العسكرية (أولاد)':'Military Education (boys)',
-'روابط مهمة':'Important links','الروابط الرسمية لكلية الآداب وجامعة المنوفية.':'Official links for the Faculty of Arts and Menoufia University.','برنامج ابن الهيثم':'Ibn Al-Haytham Program','للاستفادة من خدمات البرنامج.':"To benefit from the program's services.",
+'روابط مهمة':'Important links','برنامج ابن الهيثم':'Ibn Al-Haytham Program','للاستفادة من خدمات البرنامج.':"To benefit from the program's services.",
 'منصة التعلم الإلكتروني':'E-Learning Platform','الدخول على منصة التعلم.':'Log in to the learning platform.','الدفع الإلكتروني':'Electronic Payment','سداد الرسوم والمصروفات.':'Pay fees and expenses.',
 'الصفحة الرسمية لكلية الآداب':'Official Faculty of Arts page','متابعة أخبار الكلية وفعالياتها (فيسبوك).':'Follow college news and events (Facebook).','القناة الرسمية لطلاب كلية الآداب':'Official channel for Faculty of Arts students',
 'الاستفسارات وآخر المستجدات (تيليجرام).':'Inquiries and latest updates (Telegram).','صفحة الإرشاد الأكاديمي':'Academic Advising page','الاستفسارات والإرشاد الأكاديمي وتوجيه الطلاب (فيسبوك).':'Inquiries, academic advising and student guidance (Facebook).',
@@ -137,8 +137,8 @@ Object.assign(EN,{
 'عن':'about','من':'of','نظري':'theory','عملي':'practical','مواد':'subjects','أسماء':'names','أدوات':'tools','أيام':'days','رابط':'links','الكل':'All','فيها عملي':'With practical','نظري فقط':'Theory only',
 'تذكير':'Reminder','هيئة التدريس والمعيدون في برنامج الجيوماتكس ومقرراتهم.':'Faculty and teaching assistants in the Geomatics program and their courses.'
 });
-Object.assign(EN,{'واتساب':'WhatsApp','محاضر':'Lecturer','رفع':'Upload','تيليجرام':'Telegram','فيسبوك':'Facebook','لينكدإن':'LinkedIn','جيت هب':'GitHub','منصة طلاب برنامج الجيوماتكس':'Geomatics Program Students Platform','أدوات المساحة والخرائط':'Surveying & Mapping Tools','المساحة والخرائط':'Surveying & Mapping','م':'m','سم':'cm','درجات':'degrees','درجة':'degree','أو':'or','نظم المعلومات الجغرافية':'Geographic Information Systems','English / عربي':'العربية / English','أحمد زهران':'Ahmed Zahran','ليدر الدفعة:':'Batch leader:','محمد وائل':'Mohamed Wael','تواصل مع ليدر الدفعة على واتساب.':'Contact the batch leader on WhatsApp.'});
-const NM=[['أ.م.د/ ','Assoc. Prof. '],['أ.د/ ','Prof. '],['د/ ','Dr. '],['أ/ ','T.A. '],['عواد حامد','Awad Hamed'],['أماني الإمام','Amani El-Imam'],['إيمان عصام','Eman Essam'],['صبحي رمضان','Sobhy Ramadan'],['عاطف حافظ سلامة','Atef Hafez Salama'],['وجدي وجيه','Wagdy Wageeh'],['عادل شاويش','Adel Shawish'],['يوسف السيد محمد','Youssef El-Sayed Mohamed'],['أماني المنشاوي','Amani El-Menshawy'],['موسى فتحي','Mousa Fathy'],['مدرج ','Hall '],['مجموعة ','Group ']].sort((a,b)=>b[0].length-a[0].length);
+Object.assign(EN,{'واتساب':'WhatsApp','محاضر':'Lecturer','رفع':'Upload','تيليجرام':'Telegram','فيسبوك':'Facebook','لينكدإن':'LinkedIn','جيت هب':'GitHub','منصة طلاب برنامج الجيوماتكس':'Geomatics Program Students Platform','أدوات المساحة والخرائط':'Surveying & Mapping Tools','المساحة والخرائط':'Surveying & Mapping','م':'m','سم':'cm','درجات':'degrees','درجة':'degree','أو':'or','نظم المعلومات الجغرافية':'Geographic Information Systems','English / عربي':'العربية / English','أحمد زهران':'Ahmed Zahran','لسه مفيش مواد اتضافت، هتظهر هنا قريباً.':'No subjects have been added yet. They will appear here soon.','لسه مفيش كتب اتضافت، هتظهر هنا قريباً.':'No books have been added yet. They will appear here soon.','لسه مفيش دكاترة اتضافوا، هيظهروا هنا قريباً.':'No faculty members have been added yet. They will appear here soon.','لسه مفيش جروبات أو روابط اتضافت، هتظهر هنا قريباً.':'No groups or links have been added yet. They will appear here soon.','الجدول لسه فاضي، هيتضاف هنا قريباً.':'The schedule is empty for now. It will be added here soon.','لسه مفيش مواد اتضافت.':'No subjects have been added yet.'});
+const NM=[['أ.م.د/ ','Assoc. Prof. '],['أ.د/ ','Prof. '],['د/ ','Dr. '],['أ/ ','T.A. '],['مدرج ','Hall '],['مجموعة ','Group ']].sort((a,b)=>b[0].length-a[0].length);
 const PAT=[[/^(\d+) نظري$/,'$1 theory'],[/^(\d+) عملي$/,'$1 practical'],[/^(\d+) مواد$/,'$1 subjects'],[/^(\d+) أسماء$/,'$1 names'],[/^(\d+) أدوات$/,'$1 tools'],[/^(\d+) أيام$/,'$1 days'],[/^(\d+) رابط$/,'$1 links'],[/^(\d+) من (\d+)$/,'$1 of $2']];
 const AR=/[\u0600-\u06FF]/,flip=s=>s.replace(/[←→]/g,c=>c=='←'?'→':'←'),ND='٠١٢٣٤٥٦٧٨٩';
 let RX=null;const esc=s=>s.replace(/[.*+?^${}()|[\]\\]/g,'\\$&');
