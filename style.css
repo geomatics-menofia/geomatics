@@ -324,7 +324,7 @@ html{touch-action:pan-x pan-y} /* منع التكبير بالإصبعين (iOS 
 
 .bl{margin-inline-end:auto;display:flex;align-items:center;gap:12px;min-width:0}
 .orgh{display:flex;align-items:center;gap:8px;padding-inline-start:12px;border-inline-start:1px solid var(--gb);line-height:1.3}
-.orgh img{width:30px;height:30px;border-radius:50%;background:#fff;padding:1px;box-shadow:0 0 0 2px var(--gb);flex:none}
+.orgh img{width:34px;height:34px;border-radius:8px;object-fit:contain;background:#fff;padding:1px;box-shadow:0 0 0 2px var(--gb);flex:none}
 .orgh span{display:grid}.orgh b{font:600 .72rem/1.35 var(--f);color:var(--mute);white-space:nowrap}
 #lg{font:700 .78rem var(--f);transition:transform .3s var(--sp)}#lg:hover{transform:scale(1.1)}
 /* الظل المتوهج: كان فلتر drop-shadow بيتعاد حسابه كل فريم على الكانفاس المتحرك (ده كان أكبر سبب في التقل)، اتبدل بطبقة ثابتة بنفس الشكل */

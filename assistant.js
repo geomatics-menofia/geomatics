@@ -13,9 +13,9 @@ const AL={geo101:['طبيعيه','geo101','عواد'],geo102:['مساحه','خر
 const subjectsIn=q=>S.filter(s=>(AL[s.id]||[]).some(a=>rx(a).test(q))||q.includes(AR(s.n)));
 
 const DAYS=['الأحد','الاثنين','الثلاثاء','الأربعاء','الخميس','الجمعة','السبت'];
-const TIMES=['9:00–10:30','10:30–12:00','12:00–1:30','1:30–3:00'];
+const TIMES=['8:00–10:00','10:00–12:00','2:00–4:00','4:00–6:00'];
 const dayIn=q=>{for(const d of DAYS)if(rx(d).test(q))return d;return null};
-const slot=x=>`${x[0]} ${x[1]} · مدرج ${x[3]}${x[4]?' · مجموعة '+x[4]:''}`;
+const slot=x=>`${x[0]} ${x[1]} · قاعة ${x[3]}${x[4]?' · مجموعة '+x[4]:''}`;
 const sn=s=>`${s.i} ${s.n}`;
 const drs=s=>s.d.concat(s.a||[]).map(x=>x+(x==SITE.head?' (رئيس القسم)':'')).join(' + ');
 
@@ -30,7 +30,7 @@ const H={
   const td=new Date(),want=/\bبكره\b|^بكره| بكره|غدا/.test(q)?DAYS[(td.getDay()+1)%7]:/النهارده|انهارده|اليوم|دلوقتي/.test(q)?DAYS[td.getDay()]:dayIn(q);
   const f=subjectsIn(q);
   if(want&&!f.length){const r=SCHED.filter(x=>AR(x[0])==AR(want)).sort((a,b)=>TIMES.indexOf(a[1])-TIMES.indexOf(b[1]));
-   return r.length?`<b>محاضرات ${want}:</b><br>${r.map(x=>{const s=S.find(v=>v.id==x[2]);return `• ${x[1]}: ${A('subject.html?id='+s.id,sn(s),1)} · مدرج ${x[3]}${x[4]?' · مجموعة '+x[4]:''}`}).join('<br>')}<br><small>حسب جدول الأسبوع الثاني، راجع إعلانات الكلية.</small>`:`مفيش محاضرات يوم ${want} في الجدول الحالي 🎉`}
+   return r.length?`<b>محاضرات ${want}:</b><br>${r.map(x=>{const s=S.find(v=>v.id==x[2]);return `• ${x[1]}: ${s?A('subject.html?id='+s.id,sn(s),1):'<b>'+E(x[2])+'</b>'}${x[5]?' ('+E(x[5])+')':''} · قاعة ${x[3]}${x[4]?' · مجموعة '+x[4]:''}`}).join('<br>')}<br><small>حسب جدول الأسبوع الثاني، راجع إعلانات الكلية.</small>`:`مفيش محاضرات يوم ${want} في الجدول الحالي 🎉`}
   const l=f.length?f:ctx;if(!l.length)return `${A('schedule.html','افتح جدول المحاضرات كامل',1)}<br>أو اسألني عن مادة معينة أو يوم، مثلاً: <i>محاضرة المساحة امتى؟</i> أو <i>جدول الأحد</i>.`;
   ctx=l;return l.map(s=>{const r=SCHED.filter(x=>x[2]==s.id);return `<b>${sn(s)}</b><br>${r.length?r.map(slot).join('<br>'):'مش موجودة في الجدول الحالي.'}`}).join('<br><br>')+`<br><small>جدول الأسبوع الثاني، ${A('schedule.html','الجدول كامل',1)}</small>`},
  doctor(q){
@@ -46,7 +46,7 @@ const H={
   if(!GROUPS.length)return 'لسه مفيش جروبات اتضافت.';
   const f=subjectsIn(q);
   if(has(q,['تيليجرام','تلجرام','قناه','قنوات','وطنيه','عسكريه']))return GROUPS.filter(g=>/تيليجرام|الوطنيه|العسكريه|قنوات/.test(AR(g.t))).flatMap(g=>g.items).map(x=>`${x.i} ${A(x.u,x.n)}`).join('<br>')||'';
-  if(has(q,['الدفعه','دفعه','سكشن','كليه الاداب','الكليه'])&&!f.length){const g=GROUPS[1].items;return g.map(x=>`${x.i} ${A(x.u,x.n)}`).join('<br>')}
+  if(has(q,['الدفعه','دفعه','سكشن','كليه الاداب','الكليه'])&&!f.length){const g=GROUPS[0].items;return g.map(x=>`${x.i} ${A(x.u,x.n)}`).join('<br>')}
   if(!f.length&&!ctx.length)return `جروبات واتساب لكل مادة، والدفعة، والسكاشن: ${A('groups.html','افتح صفحة الجروبات',1)}<br>أو اسأل عن مادة: <i>جروب الجودة</i>.`+ask('جروب');
   return need(q,l=>l.map(s=>GROUP_OF[s.id]?`💬 ${A(GROUP_OF[s.id],'جروب '+s.n)}`:`${sn(s)}: لسه مفيش جروب ليها، ${A('groups.html','شوف باقي الجروبات',1)}`).join('<br>'),'جروب')},
  files(q){
@@ -98,7 +98,7 @@ function answer(raw){raw=en2ar(raw);
  if(has(q,['المواد','مقررات الفصل','كام ماده','مواد الترم'])||subjectsIn(q).length)return H.subjects(q);
  return null}
 const FALL=()=>`مش متأكد إني فهمت 🤔 جرّب سؤال من دول:<div class="ai-ch">${SUG.map(t=>`<button class="chip" data-q="${E(t)}">${E(t)}</button>`).join('')}</div>`;
-const KB=()=>{const L=['المواد:'];S.forEach(s=>L.push(`- ${s.n} (${s.code}) | ${s.t} نظري${s.p?' + '+s.p+' عملي':''} | ${drs(s)} | ${s.desc}`));L.push('الجدول (الأسبوع الثاني):');SCHED.forEach(x=>{const s=S.find(v=>v.id==x[2]);L.push(`- ${slot(x)} ${s.n}`)});L.push('الجروبات: '+GROUPS.flatMap(g=>g.items).map(i=>i.n).join('، '));L.push('المطوّر: '+SITE.author+' - '+SITE.phone);return L.join('\n').slice(0,7500)};
+const KB=()=>{const L=['المواد:'];S.forEach(s=>L.push(`- ${s.n} (${s.code}) | ${s.t} نظري${s.p?' + '+s.p+' عملي':''} | ${drs(s)} | ${s.desc}`));L.push('الجدول (الأسبوع الثاني):');SCHED.forEach(x=>{const s=S.find(v=>v.id==x[2]);L.push(`- ${slot(x)} ${s?s.n:x[2]}${x[5]?' ('+x[5]+')':''}`)});L.push('الجروبات: '+GROUPS.flatMap(g=>g.items).map(i=>i.n).join('، '));L.push('المطوّر: '+SITE.author+' - '+SITE.phone);return L.join('\n').slice(0,7500)};
 const HIST=[]; /* آخر كلام مع الذكاء الاصطناعي عشان يفتكر السياق */
 const askAI=(t,m)=>{const ac=new AbortController(),to=setTimeout(()=>ac.abort(),25000);
  fetch(SITE.url+'/functions/v1/ask',{method:'POST',signal:ac.signal,headers:{'Content-Type':'application/json',apikey:SITE.key},body:JSON.stringify({q:t+(document.documentElement.lang=='en'?' (Please reply in English)':''),kb:KB(),h:HIST.slice(-6)})}).then(r=>r.json()).then(d=>{if(d&&d.a){HIST.push({r:'user',t:t},{r:'model',t:d.a})}m.innerHTML=d&&d.a?E(d.a).replace(/\*\*(.+?)\*\*/g,'<b>$1</b>').replace(/\n/g,'<br>')+'<br><small>🤖 رد ذكاء اصطناعي، راجع الإعلانات الرسمية للتأكيد.</small>':FALL()}).catch(()=>{m.innerHTML=FALL()}).finally(()=>clearTimeout(to))};
